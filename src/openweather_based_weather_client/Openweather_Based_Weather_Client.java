@@ -16,6 +16,10 @@ public class Openweather_Based_Weather_Client {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        private final String  apiid ="fd798713a90f9501121e8dc78d7d0a47";
+        private final String  cityid="733776"
+        OpenWeather_Collector oc =new OpenWeather_Collector();
+        oc.get_forecast(apiid, cityid);
     }
     
 }
