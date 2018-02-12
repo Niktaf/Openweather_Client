@@ -23,13 +23,13 @@ public class JsonParser {
     }
 
  
-    public int get_temp()throws JSONException{
+    public double get_temp()throws JSONException{
 
         JSONObject obj=new JSONObject(this.json);
         JSONArray list=(JSONArray)obj.get("list");
         JSONObject city=(JSONObject)list.get(0);
         JSONObject main=(JSONObject)city.get("main");
-        int temp=(int)main.get("temp");
+        double temp=(double)main.get("temp");
         
         return temp;
 
