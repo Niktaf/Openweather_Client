@@ -73,7 +73,7 @@ public class frmMain extends javax.swing.JFrame {
                                 + "dt TIMESTAMP NOT NULL, "
                                 + "rain INTEGER NOT NULL, "
                                 + "snow INTEGER NOT NULL, "
-                                + "PRIMARY KEY (aa));");
+                                + "PRIMARY KEY (id));");
                        
                         System.out.println("o tbl_weatherdata dimiourgi8ike");
                     }
