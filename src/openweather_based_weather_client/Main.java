@@ -23,10 +23,10 @@ public class Main {
         // Καθορισμός URI
         
         // URI τρεχουσών καιρικών συνθηκών
-        //String forecast = "http://api.openweathermap.org/data/2.5/group?id=2650225&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
+        String forecast = "http://api.openweathermap.org/data/2.5/group?id=2650225&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
         
         // URI πρόβλεψης καιρικών συνθηκών για τις επόμενες 5 ημέρες
-        String forecast = "http://api.openweathermap.org/data/2.5/forecast?id=658225&appid=fd798713a90f9501121e8dc78d7d0a47";
+        //String forecast = "http://api.openweathermap.org/data/2.5/forecast?id=658225&appid=fd798713a90f9501121e8dc78d7d0a47";
         
         OW_Collector ow = new OW_Collector(); // Συλλέκτης δεδομένων
         String prognosis = null; // Πρόγνωση
