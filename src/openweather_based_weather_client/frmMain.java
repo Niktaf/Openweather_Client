@@ -4,10 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import openweather_based_weather_client.OW_Collector;
-import openweather_based_weather_client.JsonParser;
+import openweather_based_weather_client.WeatherData;
 import org.json.JSONException;
-import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -32,21 +30,6 @@ public class frmMain extends javax.swing.JFrame {
     private PreparedStatement selectAll = null; // Επιλογή όλων των γραμμών
     private PreparedStatement selectCities = null; // Επιλογή δεδομένων με βάση τις πόλεις που επιλέγει ο χρήστης
     private PreparedStatement insertData = null; // Αντικείμενο εισαγωγής δεδομένων στη βάση δεδομένων
-    
-    
-    /*
-     * Με την μέθοδο isThere πραγματοποιείται έλεγχος για το αν υπάρχει η ζητούμενη στήλη μέσα
-     * στον πίνακα που καθορίζεται μέσα στο ResultSet. Επιστρέφει true αν υπάρχει, ενώ επιστρέφει false αν
-     * δεν υπάρχει η στήλη. 
-    */
-    private boolean isThere(ResultSet rs, String column){
-        try {
-            rs.findColumn(column);
-            return true;
-            } 
-        catch (SQLException sqlex) {}
-        return false;
-    }
         
     /*
      * Με τη μέθοδο Sindesi() πραγματοποιείται σύνδεση με τη βάση δεδομένων, αφού πρώτα οριστούν:
@@ -70,68 +53,68 @@ public class frmMain extends javax.swing.JFrame {
                 DatabaseMetaData md = conn.getMetaData();
                    
                 // Ορισμός του πίνακα αναζήτησης
-                ResultSet rsTables = md.getColumns(null, null, "tbl_cities", null);
+                ResultSet rsTables = md.getColumns(conn.getCatalog(), "APP", "tbl_cities", "city_id");
                 Statement createTable = conn.createStatement();
                     
                 /*
                  * Έλεγχος για την ύπαρξη του πίνακα tbl_cities. Στην περίπτωση που δεν υπάρχει, 
                  * τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
                 */
-                    
-                if (!isThere(rsTables, null)) {
+                try {
+                    if (!rsTables.next()) {
                     createTable.executeUpdate("CREATE TABLE tbl_cities ("
                             + "city_id INTEGER NOT NULL, "
                             + "city VARCHAR(40) NOT NULL, "
                             + "PRIMARY KEY (city_ID))");
-                     
-                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_cities δημιουργήθηκε με επιτυχία.");
-                }
+                    }
+                } catch (SQLException ex) {}   
+                
                     
                 // Ομοίως και για τον πίνακα tbl_weatherdata 
                 // Ορισμός του πίνακα αναζήτησης
-                rsTables = md.getColumns(null, null, "tbl_weatherdata", null);                 
+                rsTables = md.getColumns(conn.getCatalog(), "APP", "tbl_weatherdata", "id");                 
                  
                 // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
-                if (!isThere(rsTables, null)) {
-                    createTable.executeUpdate("CREATE TABLE tbl_weatherdata ("
-                            + "id INTEGER NOT NULL PRIMARY KEY, "
-                            + "city_id INTEGER NOT NULL, "
-                            + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
-                            + "city VARCHAR(40) NOT NULL, "
-                            + "temperature DECIMAL(4,1) NOT NULL, "
-                            + "weather_description VARCHAR(255) NOT NULL, "
-                            + "clounds DECIMAL(4,3) NOT NULL, "
-                            + "wind_speed DECIMAL(5,1) NOT NULL, "
-                            + "dt TIMESTAMP NOT NULL, "
-                            + "rain INTEGER NOT NULL, "
-                            + "snow INTEGER NOT NULL)");
-                       
-                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_weatherdata δημιουργήθηκε με επιτυχία.");
-                }
-                    
+                try {
+                    if (!rsTables.next()) {
+                        createTable.executeUpdate("CREATE TABLE tbl_weatherdata ("
+                                + "id INTEGER NOT NULL PRIMARY KEY, "
+                                + "city_id INTEGER NOT NULL, "
+                                + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
+                                + "city VARCHAR(40) NOT NULL, "
+                                + "temperature DECIMAL(4,1) NOT NULL, "
+                                + "weather_description VARCHAR(255) NOT NULL, "
+                                + "clounds DECIMAL(4,3) NOT NULL, "
+                                + "wind_speed DECIMAL(5,1) NOT NULL, "
+                                + "dt TIMESTAMP NOT NULL, "
+                                + "rain INTEGER NOT NULL, "
+                                + "snow INTEGER NOT NULL)");
+                    }
+                } catch (SQLException ex) {} 
+                
                 // Ομοίως και για τον πίνακα tbl_provlepseis 
                 // Ορισμός του πίνακα αναζήτησης
-                rsTables = md.getColumns(null, null, "tbl_provlepseis", null);                 
+                rsTables = md.getColumns(conn.getCatalog(), "APP", "tbl_provlepseis", "id");                 
                     
                 // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
-                if (!isThere(rsTables, null)) {
-                    createTable.executeUpdate("CREATE TABLE tbl_provlepseis ("
-                            + "id BIGINT GENERATED BY DEFAULT AS IDENTITY, "
-                            + "city_id INTEGER NOT NULL, "
-                            + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
-                            + "city VARCHAR(40) NOT NULL, "
-                            + "temperature DECIMAL(4,1) NOT NULL, "
-                            + "weather_description VARCHAR(255) NOT NULL, "
-                            + "clounds DECIMAL(4,3) NOT NULL, "
-                            + "wind_speed DECIMAL(5,1) NOT NULL, "
-                            + "dt TIMESTAMP NOT NULL, "
-                            + "rain INTEGER NOT NULL, "
-                            + "snow INTEGER NOT NULL, "
-                            + "PRIMARY KEY (id))");
-                       
-                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_provlepseis δημιουργήθηκε με επιτυχία.");
-                }
-                    
+                try {
+                    if (!rsTables.next()) {
+                        createTable.executeUpdate("CREATE TABLE tbl_provlepseis ("
+                                + "id BIGINT GENERATED BY DEFAULT AS IDENTITY, "
+                                + "city_id INTEGER NOT NULL, "
+                                + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
+                                + "city VARCHAR(40) NOT NULL, "
+                                + "temperature DECIMAL(4,1) NOT NULL, "
+                                + "weather_description VARCHAR(255) NOT NULL, "
+                                + "clounds DECIMAL(4,3) NOT NULL, "
+                                + "wind_speed DECIMAL(5,1) NOT NULL, "
+                                + "dt TIMESTAMP NOT NULL, "
+                                + "rain INTEGER NOT NULL, "
+                                + "snow INTEGER NOT NULL, "
+                                + "PRIMARY KEY (id))");
+                    }
+                } catch (SQLException ex) {}
+                
                 // Κλείσιμο διάφορων αντικειμένων
                 rsTables.close();
                 createTable.close();
@@ -148,59 +131,8 @@ public class frmMain extends javax.swing.JFrame {
      */
     public frmMain() throws SQLException, JSONException {
         initComponents();
-               
-        /*
-         * Παρακάτω πραγματοποιείται δημιουργία του URI με το οποίο θα ζητηθούν από το OpenWeather
-         * όλες οι απαιτούμενες πληροφορίες, η λήψη αυτών με τη μορφή JSON string, η "αποσυναρμολόγηση"
-         * του JSON string και η παράδοση των πληροφοριών του στον χρήστη προς περαιτέρω επεξεργασία.
-         *
-         * ΑΡΧΗ
-         *
-        */
-
-        // Καθορισμός URI
-        
-        // URI τρεχουσών καιρικών συνθηκών
-        String forecast = "http://api.openweathermap.org/data/2.5/group?id=2650225&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
-        
-        // URI πρόβλεψης καιρικών συνθηκών για τις επόμενες 5 ημέρες
-        //String forecast = "http://api.openweathermap.org/data/2.5/forecast?id=658225&appid=fd798713a90f9501121e8dc78d7d0a47";
-        
-        OW_Collector ow = new OW_Collector(); // Συλλέκτης δεδομένων
-        String prognosis = null; // Πρόγνωση
-        
-        // Διάφορες μεταβλητές και αρχικοποίησή τους
-        double temp=0, snow=0, rain=0; // θερμοκρασία
-        int clouds=0; // Νεφοκάλυψη ουρανού
-        String name="", desc="", dt=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
-        long cityID=0; // Κωδικός πόλης
-        
-        try {
-            prognosis = ow.HttpGet(forecast); // Λήψη δεδομένων σε μορφή JSON από τον κεντρικό εξυπηρετητή
-        } catch (IOException e) { // Διαχείριση εξαιρέσεων 
-            e.printStackTrace();
-        }
-        
-        JsonParser jp = new JsonParser(prognosis); // Αποσυνθέτης JSON string
-               
-        try {
-            // Λήψη δεδομένων από το JSON string
-            temp = jp.get_Temp();
-            name = jp.get_City();
-            desc = jp.get_WeatherDesc();
-            clouds = jp.get_CloudsAll();
-            dt = jp.get_DateTime();
-            cityID = jp.get_CityID();
-        } catch (JSONException e) { // Διαχείριση εξαιρέσεων
-            e.printStackTrace();
-        }
-        
-        /*
-         *
-         * ΤΕΛΟΣ
-         *
-        */
-                
+        WeatherData jsonData = new WeatherData(); // Δημιουργία εξαγωγέα δεδομένων JSON
+        jsonData.TrexwnKairos(); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         KairosTwraPanel.setVisible(false); //Απόκρυψη πάνελ τρέχοντος καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         PrognwsiPanel.setVisible(false); //Απόκρυψη πάνελ πρόγνωσης καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         StatistikaPanel.setVisible(false); //Απόκρυψη πάνελ στατιστικών από το χρήστη, κατά την εκκίνηση του προγράμματος
