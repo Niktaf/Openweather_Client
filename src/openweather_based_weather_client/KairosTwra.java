@@ -6,6 +6,7 @@
 package openweather_based_weather_client;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import org.json.JSONException;
 
 /**
@@ -19,11 +20,12 @@ import org.json.JSONException;
 public class KairosTwra {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
-    private double temp=0, snow=0, rain=0; // θερμοκρασία
+    private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
-    private String name="", desc="", dt=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
+    private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
+    private Timestamp dt;
     private long cityID=0; // Κωδικός πόλης
-        
+    
     public void TrexwnKairos() throws JSONException {
         
         /*
@@ -57,6 +59,7 @@ public class KairosTwra {
             clouds = jp.get_CloudsAll();
             dt = jp.get_DateTime();
             cityID = jp.get_CityID();
+            wind = jp.get_WindSpeed();
         } catch (JSONException e) { // Διαχείριση εξαιρέσεων
             e.printStackTrace();
         }
@@ -96,7 +99,7 @@ public class KairosTwra {
         return desc;
     }
 
-    public String getDt() {
+    public Timestamp getDt() {
         return dt;
     }
 
@@ -104,6 +107,9 @@ public class KairosTwra {
         return cityID;
     }
     
+    public double getWindSpeed() {
+        return wind;
+    }
     /*
      * GETTERS KAI SETTERS
      * ΤΕΛΟΣ

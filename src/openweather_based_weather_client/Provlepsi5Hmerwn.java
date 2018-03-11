@@ -6,20 +6,25 @@
 package openweather_based_weather_client;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import org.json.JSONException;
 
 /**
  *
- * @author pavlidis_aris
- */
+ * @author Παυλίδης Αριστείδης
+ * @author Ταφραλίδης Νικόλαος
+ * @author Τριανταφυλλίδης Τρύφων
+ * ΘΕΣ-2 (2017-2018)
+ */ 
 public class Provlepsi5Hmerwn {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
-    private double temp=0, snow=0, rain=0; // θερμοκρασία
+    private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
-    private String name="", desc="", dt=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
+    private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού
+    private Timestamp dt; // σφραγίδα χρονοσήμανσης
     private long cityID=0; // Κωδικός πόλης
-   
+    
     public void Provlepsi5Imerwn() throws JSONException {
         
         /*
@@ -53,6 +58,8 @@ public class Provlepsi5Hmerwn {
             clouds = jp.get_CloudsAll();
             dt = jp.get_DateTime();
             cityID = jp.get_CityID();
+            wind = jp.get_WindSpeed();
+            
         } catch (JSONException e) { // Διαχείριση εξαιρέσεων
             e.printStackTrace();
         }
@@ -63,4 +70,50 @@ public class Provlepsi5Hmerwn {
          *
         */
     }
+    
+    /*
+     * GETTERS KAI SETTERS
+     * APXH
+    */
+    
+    public double getTemp() {
+        return temp;
+    }
+
+    public double getSnow() {
+        return snow;
+    }
+
+    public double getRain() {
+        return rain;
+    }
+
+    public int getClouds() {
+        return clouds;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public Timestamp getDt() {
+        return dt;
+    }
+
+    public long getCityID() {
+        return cityID;
+    }
+    
+    public double getWindSpeed() {
+        return wind;
+    }
+    
+    /*
+     * GETTERS KAI SETTERS
+     * ΤΕΛΟΣ
+    */
 }

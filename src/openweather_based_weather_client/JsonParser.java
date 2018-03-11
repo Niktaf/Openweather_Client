@@ -12,7 +12,8 @@ package openweather_based_weather_client;
  * @author Τριανταφυλλίδης Τρύφων
  * ΘΕΣ-2 (2017-2018)
  */ 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,13 +82,15 @@ public class JsonParser {
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
         JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("wind"); // Επιλογή αντικειμένου ανέμου
-        double wind=main.getDouble("speed"); // Ανάνγωση πεδίου ταχύτητας του ανέμου
-               
-        return wind; // Επιστροφή δεδομένων στον χρήστη
+        BigDecimal wind=BigDecimal.valueOf(main.getDouble("speed")); // Ανάνγωση πεδίου ταχύτητας του ανέμου
+        wind.setScale(3);
+        double ws = wind.doubleValue();
+        
+        return ws; // Επιστροφή δεδομένων στον χρήστη
     }
     
     // Εξόρυξη ημερομηνίας από το JSON string
-    public String get_DateTime()throws JSONException{
+    public Timestamp get_DateTime()throws JSONException{
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
@@ -95,9 +98,9 @@ public class JsonParser {
         long dt=city.getLong("dt"); // Ανάγνωση σφραγίδας χρονοσήμανσης
         Calendar cal = Calendar.getInstance(); // Δημιουργία νέου ημερολογίου
         cal.setTimeInMillis(dt*1000); // Ρύθμιση του ημερολογίου σύμφωνα με τη χρονοσήμανση που λήφθηκε
-        
+
         // Καθορισμός μορφής εμφανιζόμενης ημερομηνίας και ώρας
-        String timeString = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(cal.getTime());
+        Timestamp timeString = new Timestamp(cal.getTimeInMillis());
 
         return timeString; // Επιστροφή δεδομένων στον χρήστη
     }
