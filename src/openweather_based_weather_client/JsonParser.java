@@ -14,7 +14,9 @@ package openweather_based_weather_client;
  */ 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,42 @@ public class JsonParser {
         this.json=json;
     }
 
+    
+    private final ArrayList<KairosPolis> list = new ArrayList<>();
+ 
+    // Εξόρυξη θερμοκρασίας από το JSON string
+    public double test()throws JSONException{
+        
+        
+        JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
+        JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
+        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        String name=city.getString("name"); // Ανάγνωση πεδίου ονόματος επιλεγμένης πόλης
+ 
+        Iterator keys = city.keys();
+        while(keys.hasNext()) {
+            String key = (String)keys.next();
+            JSONObject json3=city.getJSONObject(key);
+            
+            JSONObject userjson=json3.getJSONObject("user");    
+            KairosPolis kp = new KairosPolis();
+            String id=userjson.getString("id");
+            String name=userjson.getString("name");
+            user.setId(id);
+            user.setName(name);
+            list.add(user);      
+        }
+        
+        return temp; // Επιστροφή δεδομένων στον χρήστη
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     // Εξόρυξη θερμοκρασίας από το JSON string
     public double get_Temp()throws JSONException{
 
