@@ -255,13 +255,18 @@ public class frmMain extends javax.swing.JFrame {
         btnMinMaxTemp = new javax.swing.JButton();
         btnTempPerCity = new javax.swing.JButton();
         btnEpistrofi_Statistika = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        mnKairosTwra = new javax.swing.JMenu();
+        mnPrognwsi = new javax.swing.JMenu();
+        mnStatistika = new javax.swing.JMenu();
+        mnExit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Open Weather");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"ενα", "", "", ""},
+                {"", "", "", ""},
                 {"", "", "", ""},
                 {"", "", "", ""},
                 {"", "", "", ""}
@@ -285,7 +290,7 @@ public class frmMain extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -594,27 +599,41 @@ public class frmMain extends javax.swing.JFrame {
                 .addComponent(PrognwsiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(StatistikaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
+
+        mnKairosTwra.setText("Ο καιρός τώρα");
+        jMenuBar1.add(mnKairosTwra);
+
+        mnPrognwsi.setText("Πρόγνωση καιρού");
+        jMenuBar1.add(mnPrognwsi);
+
+        mnStatistika.setText("Στατιστικά");
+        jMenuBar1.add(mnStatistika);
+
+        mnExit.setText("Έξοδος");
+        jMenuBar1.add(mnExit);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -769,6 +788,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -776,5 +796,9 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JList<String> lstCities;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenu mnExit;
+    private javax.swing.JMenu mnKairosTwra;
+    private javax.swing.JMenu mnPrognwsi;
+    private javax.swing.JMenu mnStatistika;
     // End of variables declaration//GEN-END:variables
 }
