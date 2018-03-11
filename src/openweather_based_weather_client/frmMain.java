@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import openweather_based_weather_client.KairosTwra;
+import openweather_based_weather_client.Provlepsi5Hmerwn;
 import org.json.JSONException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
 
 /**
  *
@@ -70,7 +72,8 @@ public class frmMain extends javax.swing.JFrame {
                     
                     // Εισαγωγή των πόλεων και των κωδικών αυτών κατά την δημιουργία της βάσης δεδομένων
                     insertData = conn.prepareStatement("INSERT INTO APP.TBL_CITIES (CITY_ID, CITY) VALUES (264371, 'Αθήνα'), (734077, 'Θεσσαλονίκη'), (8133690, 'Πάτρα'), (8133786, 'Λάρισα'), (261743, 'Ηράκλειο')");
-                    insertData.executeUpdate();
+                    insertData.executeUpdate(); // Εκτέλεση του ερωτήματος προς τη βάση δεδομένων
+                    insertData = null; // Άδειασμα του αντικειμένου
                     }
                 } catch (SQLException ex) {}   
                 
@@ -172,26 +175,35 @@ public class frmMain extends javax.swing.JFrame {
         insertData.setDouble(9, kairos.getSnow());
         
         insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
-        
+        insertData = null; // Άδειασμα του αντικειμένου
+                
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
     }
     
-    public boolean isTableExist(String sTablename) throws SQLException{
-        if(conn!=null)
-        {
-            DatabaseMetaData dbmd = conn.getMetaData();
-            ResultSet rs = dbmd.getTables(null, null, sTablename.toUpperCase(),null);
-            if(rs.next()) {}
-            else
-            {
-                System.out.println("Write your create table function here !!!");
-            }
-            return true;
-        }
-        return false;
+    public void ProvlepsiPen8imerou() throws SQLException, JSONException {
+        Provlepsi5Hmerwn provlepsi = new Provlepsi5Hmerwn(); // Δημιουργία εξαγωγέα δεδομένων JSON
+        provlepsi.Provlepsi5Imerwn();// Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
+        Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
+        
+        // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
+        insertData = conn.prepareStatement("INSERT INTO tbl_provlepseis (city_id, city, temperature, weather_description, clouds, wind_speed, dt, rain, snow) VALUES (?,?,?,?,?,?,?,?,?)");
+        
+        // Προετοιμασία μετεωρολογικών δεδομένων
+        insertData.setLong(1, provlepsi.getCityID());
+        insertData.setString(2, provlepsi.getName());
+        insertData.setDouble(3, provlepsi.getTemp());
+        insertData.setString(4, provlepsi.getDesc());
+        insertData.setInt(5, provlepsi.getClouds());
+        insertData.setDouble(6, provlepsi.getWindSpeed());
+        insertData.setTimestamp(7, provlepsi.getDt());
+        insertData.setDouble(8, provlepsi.getRain());
+        insertData.setDouble(9, provlepsi.getSnow());
+        
+        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
+        insertData = null; // Άδειασμα του αντικειμένου
+                
+        Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
     }
-    
-    
     
     /**
      * Δημιουργία νέας φόρμας frmMain. Κατά τη δημιουργία της φόρμας, εκτός από δημιουργία των 
@@ -199,7 +211,8 @@ public class frmMain extends javax.swing.JFrame {
      * Αν δεν υπάρχει, τότε δημιουργείται αυτόματα. Στη συνέχεια πραγματοποιείται λήψη καιρικών
      * συνθηκών για όλες τις πόλεις από το openweather.org με κλήση του κατάλληλου URI και στη συνέχεια
      * τα δεδομένα καταχωρούνται στη βάση δεδομένων προς περαιτέρω επεξεργασία.
-     */
+    */
+    
     public frmMain() throws SQLException, JSONException {
         initComponents();
         KairosTwraPanel.setVisible(false); //Απόκρυψη πάνελ τρέχοντος καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
