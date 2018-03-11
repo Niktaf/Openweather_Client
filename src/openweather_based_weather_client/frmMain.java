@@ -67,6 +67,7 @@ public class frmMain extends javax.swing.JFrame {
                             + "city_id INTEGER NOT NULL, "
                             + "city VARCHAR(40) NOT NULL, "
                             + "PRIMARY KEY (city_ID))");
+                    
                     // Εισαγωγή των πόλεων και των κωδικών αυτών κατά την δημιουργία της βάσης δεδομένων
                     insertData = conn.prepareStatement("INSERT INTO APP.TBL_CITIES (CITY_ID, CITY) VALUES (264371, 'Αθήνα'), (734077, 'Θεσσαλονίκη'), (8133690, 'Πάτρα'), (8133786, 'Λάρισα'), (261743, 'Ηράκλειο')");
                     insertData.executeUpdate();
