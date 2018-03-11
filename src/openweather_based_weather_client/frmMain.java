@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
+import java.util.Vector;
 
 /**
  *
@@ -94,6 +94,8 @@ public class frmMain extends javax.swing.JFrame {
                                 + "clouds DECIMAL(4,1) NOT NULL, "
                                 + "wind_speed DECIMAL(5,1) NOT NULL, "
                                 + "dt TIMESTAMP NOT NULL, "
+                                + "rain INTEGER NOT NULL, "
+                                + "snow INTEGER NOT NULL, "
                                 + "PRIMARY KEY (id))");
                     }
                 } catch (SQLException ex) {} 
@@ -255,11 +257,6 @@ public class frmMain extends javax.swing.JFrame {
         btnMinMaxTemp = new javax.swing.JButton();
         btnTempPerCity = new javax.swing.JButton();
         btnEpistrofi_Statistika = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        mnKairosTwra = new javax.swing.JMenu();
-        mnPrognwsi = new javax.swing.JMenu();
-        mnStatistika = new javax.swing.JMenu();
-        mnExit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Open Weather");
@@ -290,7 +287,7 @@ public class frmMain extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -599,22 +596,8 @@ public class frmMain extends javax.swing.JFrame {
                 .addComponent(PrognwsiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(StatistikaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
-
-        mnKairosTwra.setText("Ο καιρός τώρα");
-        jMenuBar1.add(mnKairosTwra);
-
-        mnPrognwsi.setText("Πρόγνωση καιρού");
-        jMenuBar1.add(mnPrognwsi);
-
-        mnStatistika.setText("Στατιστικά");
-        jMenuBar1.add(mnStatistika);
-
-        mnExit.setText("Έξοδος");
-        jMenuBar1.add(mnExit);
-
-        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -700,6 +683,15 @@ public class frmMain extends javax.swing.JFrame {
         else
         {
             jTable1.setModel(new DefaultTableModel()); // Καθαρισμός του πίνακα προβολής μετεορολογικών δεδομένων
+            try {
+                Sindesi(); // Σύνδεση με τη βάση δεδομένων
+                selectAll = conn.prepareStatement("SELECT * FROM TBL_WEATHERDATA"); // Συλλογή δεδομένων
+                selectAll.executeUpdate(); // Εκτέλεση ερωτήματος
+                Aposindesi(); // Αποσύνδεση από τη βάση δεδομένων
+
+            } catch (SQLException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnKairosTwraActionPerformed
 
@@ -788,7 +780,6 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -796,9 +787,5 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JList<String> lstCities;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenu mnExit;
-    private javax.swing.JMenu mnKairosTwra;
-    private javax.swing.JMenu mnPrognwsi;
-    private javax.swing.JMenu mnStatistika;
     // End of variables declaration//GEN-END:variables
 }
