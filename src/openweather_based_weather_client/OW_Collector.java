@@ -11,6 +11,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ *
+ * @author Παυλίδης Αριστείδης
+ * @author Ταφραλίδης Νικόλαος
+ * @author Τριανταφυλλίδης Τρύφων
+ * ΘΕΣ-2 (2017-2018)
+ */ 
 public class OW_Collector {
 
    public String HttpGet(String url) throws IOException {
