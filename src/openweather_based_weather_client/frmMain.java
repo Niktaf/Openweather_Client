@@ -32,13 +32,27 @@ public class frmMain extends javax.swing.JFrame {
     private PreparedStatement selectAll = null; // Επιλογή όλων των γραμμών
     private PreparedStatement selectCities = null; // Επιλογή δεδομένων με βάση τις πόλεις που επιλέγει ο χρήστης
     private PreparedStatement insertData = null; // Αντικείμενο εισαγωγής δεδομένων στη βάση δεδομένων
-
-    /**
+    
+    
+    /*
+     * Με την μέθοδο isThere πραγματοποιείται έλεγχος για το αν υπάρχει η ζητούμενη στήλη μέσα
+     * στον πίνακα που καθορίζεται μέσα στο ResultSet. Επιστρέφει true αν υπάρχει, ενώ επιστρέφει false αν
+     * δεν υπάρχει η στήλη. 
+    */
+    private boolean isThere(ResultSet rs, String column){
+        try {
+            rs.findColumn(column);
+            return true;
+            } 
+        catch (SQLException sqlex) {}
+        return false;
+    }
+        
+    /*
      * Με τη μέθοδο Sindesi() πραγματοποιείται σύνδεση με τη βάση δεδομένων, αφού πρώτα οριστούν:
      * 1. Ο τρόπος σύνδεσης και το όνομα της βάσης δεδομένων
-     * 2. Τα στοιχεία (όνομα και συνθηματικό) του χρήστη
-     * @throws SQLException 
-     */
+     * 2. Τα στοιχεία (όνομα και συνθηματικό) του χρήστη 
+    */
     public void Sindesi() throws SQLException {
            try {
                 /*
@@ -48,58 +62,83 @@ public class frmMain extends javax.swing.JFrame {
                 String dbURL = "jdbc:derby:dbWeather;create=true";
                 conn = DriverManager.getConnection(dbURL);
                 if (conn != null) { // Εάν πραγματοποιηθεί σύνδεση με τη βάση δεδομένων
-                    
-                    /*
-                     * Έλεγχος για το αν υπάρχουν οι απαιτούμενοι πίνακες στη βάση δεδομένων.
-                     * Αν αυτοί δεν υπάρχουν, τότε θα δημιουργηθούν αυτόματα.
-                    */
-                    DatabaseMetaData md = conn.getMetaData();
-                    
-                    // Έλεγχος για την ύπαρξη του πίνακα tbl_cities
-                    ResultSet rsTables = md.getColumns(null, null, "tbl_cities", "city_id");
-                    Statement createTables = conn.createStatement();
-
-                    // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
-                    if (!rsTables.next()) {
-                        createTables.executeUpdate("CREATE TABLE tbl_cities ("
-                                + "city_id INTEGER NOT NULL, "
-                                + "city VARCHAR(40) NOT NULL, "
-                                + "PRIMARY KEY (city_ID))");
-                        
-                        System.out.println("o tbl_cities dimiourgi8ike");
-                    }
-                    
-                    /* Ομοίως και για τον πίνακα tbl_weatherdata ο οποίος θα περιέχει τις πόλεις 
-                     * και τους κωδικούς τους, όπως ορίζονται από το openweather
-                    */   
-                    // Έλεγχος για την ύπαρξη του πίνακα tbl_weatherdata
-                    rsTables = md.getColumns(null, null, "tbl_weatherdata", "id");                 
-                    
-                    // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
-                    if (!rsTables.next()) {
-                        createTables.executeUpdate("CREATE TABLE tbl_weatherdata ("
-                                + "id INTEGER NOT NULL PRIMARY KEY, "
-                                + "city_id INTEGER NOT NULL, "
-                                + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
-                                + "city VARCHAR(40) NOT NULL, "
-                                + "temperature DECIMAL(4,1) NOT NULL, "
-                                + "weather_description VARCHAR(255) NOT NULL, "
-                                + "clounds DECIMAL(4,3) NOT NULL, "
-                                + "wind_speed DECIMAL(5,1) NOT NULL, "
-                                + "dt TIMESTAMP NOT NULL, "
-                                + "rain INTEGER NOT NULL, "
-                                + "snow INTEGER NOT NULL)");
-                       
-                        System.out.println("o tbl_weatherdata dimiourgi8ike");
-                    }
+                               
+                /*
+                 * Έλεγχος για το αν υπάρχουν οι απαιτούμενοι πίνακες στη βάση δεδομένων.
+                 * Αν αυτοί δεν υπάρχουν, τότε θα δημιουργηθούν αυτόματα.
+                */
+                DatabaseMetaData md = conn.getMetaData();
                    
-                    // Κλείσιμο διάφορων αντικειμένων
-                    rsTables.close();
-                    createTables.close();
+                // Ορισμός του πίνακα αναζήτησης
+                ResultSet rsTables = md.getColumns(null, null, "tbl_cities", null);
+                Statement createTable = conn.createStatement();
+                    
+                /*
+                 * Έλεγχος για την ύπαρξη του πίνακα tbl_cities. Στην περίπτωση που δεν υπάρχει, 
+                 * τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
+                */
+                    
+                if (!isThere(rsTables, null)) {
+                    createTable.executeUpdate("CREATE TABLE tbl_cities ("
+                            + "city_id INTEGER NOT NULL, "
+                            + "city VARCHAR(40) NOT NULL, "
+                            + "PRIMARY KEY (city_ID))");
+                     
+                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_cities δημιουργήθηκε με επιτυχία.");
                 }
-                conn.close(); // Τερματισμός σύνδεσης με τη βάση δεδομένων
+                    
+                // Ομοίως και για τον πίνακα tbl_weatherdata 
+                // Ορισμός του πίνακα αναζήτησης
+                rsTables = md.getColumns(null, null, "tbl_weatherdata", null);                 
+                 
+                // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
+                if (!isThere(rsTables, null)) {
+                    createTable.executeUpdate("CREATE TABLE tbl_weatherdata ("
+                            + "id INTEGER NOT NULL PRIMARY KEY, "
+                            + "city_id INTEGER NOT NULL, "
+                            + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
+                            + "city VARCHAR(40) NOT NULL, "
+                            + "temperature DECIMAL(4,1) NOT NULL, "
+                            + "weather_description VARCHAR(255) NOT NULL, "
+                            + "clounds DECIMAL(4,3) NOT NULL, "
+                            + "wind_speed DECIMAL(5,1) NOT NULL, "
+                            + "dt TIMESTAMP NOT NULL, "
+                            + "rain INTEGER NOT NULL, "
+                            + "snow INTEGER NOT NULL)");
+                       
+                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_weatherdata δημιουργήθηκε με επιτυχία.");
+                }
+                    
+                // Ομοίως και για τον πίνακα tbl_provlepseis 
+                // Ορισμός του πίνακα αναζήτησης
+                rsTables = md.getColumns(null, null, "tbl_provlepseis", null);                 
+                    
+                // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
+                if (!isThere(rsTables, null)) {
+                    createTable.executeUpdate("CREATE TABLE tbl_provlepseis ("
+                            + "id BIGINT GENERATED BY DEFAULT AS IDENTITY, "
+                            + "city_id INTEGER NOT NULL, "
+                            + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
+                            + "city VARCHAR(40) NOT NULL, "
+                            + "temperature DECIMAL(4,1) NOT NULL, "
+                            + "weather_description VARCHAR(255) NOT NULL, "
+                            + "clounds DECIMAL(4,3) NOT NULL, "
+                            + "wind_speed DECIMAL(5,1) NOT NULL, "
+                            + "dt TIMESTAMP NOT NULL, "
+                            + "rain INTEGER NOT NULL, "
+                            + "snow INTEGER NOT NULL, "
+                            + "PRIMARY KEY (id))");
+                       
+                    JOptionPane.showMessageDialog(null, "Ο πίνακας tbl_provlepseis δημιουργήθηκε με επιτυχία.");
+                }
+                    
+                // Κλείσιμο διάφορων αντικειμένων
+                rsTables.close();
+                createTable.close();
+                }
+            conn.close(); // Τερματισμός σύνδεσης με τη βάση δεδομένων
                 
-             } catch (SQLException ex) {
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
