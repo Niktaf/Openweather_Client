@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import openweather_based_weather_client.WeatherData;
+import openweather_based_weather_client.KairosTwra;
 import org.json.JSONException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -131,7 +131,7 @@ public class frmMain extends javax.swing.JFrame {
      */
     public frmMain() throws SQLException, JSONException {
         initComponents();
-        WeatherData jsonData = new WeatherData(); // Δημιουργία εξαγωγέα δεδομένων JSON
+        KairosTwra jsonData = new KairosTwra(); // Δημιουργία εξαγωγέα δεδομένων JSON
         jsonData.TrexwnKairos(); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         KairosTwraPanel.setVisible(false); //Απόκρυψη πάνελ τρέχοντος καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         PrognwsiPanel.setVisible(false); //Απόκρυψη πάνελ πρόγνωσης καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος

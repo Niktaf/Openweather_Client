@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun Mar 11 13:54:46 EET 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-14e9-be99-000002f49490 
+on database directory D:\Users\Αριστείδης\Downloads\ΠΛΗ 24\3η εργασία\Openweather_Client\dbWeather with class loader sun.misc.Launcher$AppClassLoader@55f96302 
+Loaded from file:/C:/Program%20Files/NetBeans%208.2/java/modules/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_151-b12
+user.dir=D:\Users\Αριστείδης\Downloads\ΠΛΗ 24\3η εργασία\Openweather_Client
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
