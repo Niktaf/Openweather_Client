@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Vector;
+import javax.swing.JTable;
 
 /**
  *
@@ -686,9 +687,10 @@ public class frmMain extends javax.swing.JFrame {
             try {
                 Sindesi(); // Σύνδεση με τη βάση δεδομένων
                 selectAll = conn.prepareStatement("SELECT * FROM TBL_WEATHERDATA"); // Συλλογή δεδομένων
-                selectAll.executeUpdate(); // Εκτέλεση ερωτήματος
+                ResultSet rs = selectAll.executeQuery(); // Εκτέλεση ερωτήματος
+                
                 Aposindesi(); // Αποσύνδεση από τη βάση δεδομένων
-
+                
             } catch (SQLException ex) {
                 Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
