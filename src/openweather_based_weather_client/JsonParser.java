@@ -23,10 +23,12 @@ import org.json.JSONObject;
 
 public class JsonParser {
    private String json; //json string
+   private int city_num; // city number on jason file
 
     // Κατασκευαστής
-    public JsonParser(String json) throws JSONException{
+    public JsonParser(String json,int city_num) throws JSONException{
         this.json=json;
+        this.city_num=city_num;
     }
 
     
@@ -45,7 +47,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("main"); // Επιλογή πυρήνα καιρικών πληροφοριών
         double temp=main.getDouble("temp"); // Ανάγνωση πεδίου θερμοκρασίας επιλεγμένης πόλης
         
@@ -57,7 +59,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         String name=city.getString("name"); // Ανάγνωση πεδίου ονόματος επιλεγμένης πόλης
                
         return name; // Επιστροφή δεδομένων στον χρήστη
@@ -68,9 +70,9 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONArray main=(JSONArray)city.get("weather"); // Επιλογή αντικειμένου καιρού
-        JSONObject wd=(JSONObject)main.get(0); // Επικρατούσες καιρικές συνθήκες
+        JSONObject wd=(JSONObject)main.get(city_num); // Επικρατούσες καιρικές συνθήκες
         String desc=wd.getString("description"); // Ανάγνωση πεδίου περιγραφής καιρικών συνθηκών
                
         return desc; // Επιστροφή δεδομένων στον χρήστη
@@ -81,7 +83,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("clouds"); // Επιλογή αντικειμένου νεφοκάλυψης
         int clouds=main.getInt("all"); // Ανάνγωση πεδίου ποσοστιαίας νεφοκάλυψης
                
@@ -93,7 +95,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("wind"); // Επιλογή αντικειμένου ανέμου
         BigDecimal wind=BigDecimal.valueOf(main.getDouble("speed")); // Ανάνγωση πεδίου ταχύτητας του ανέμου
         wind.setScale(3);
@@ -107,7 +109,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         long dt=city.getLong("dt"); // Ανάγνωση σφραγίδας χρονοσήμανσης
         Calendar cal = Calendar.getInstance(); // Δημιουργία νέου ημερολογίου
         cal.setTimeInMillis(dt*1000); // Ρύθμιση του ημερολογίου σύμφωνα με τη χρονοσήμανση που λήφθηκε
@@ -123,7 +125,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         long id=city.getLong("id"); // Ανάγνωση κωδικού αριθμού επιλεγμένης πόλης
                
         return id; // Επιστροφή δεδομένων στον χρήστη
@@ -134,7 +136,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("rain"); // Επιλογή αντικειμένου βροχής
         double rain=main.getDouble("3h"); // Ανάνγωση πεδίου ύψους βροχής
 
@@ -146,7 +148,7 @@ public class JsonParser {
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
         JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
-        JSONObject city=(JSONObject)list.get(0); // Επιλογή πόλης
+        JSONObject city=(JSONObject)list.get(city_num); // Επιλογή πόλης
         JSONObject main=(JSONObject)city.get("snow"); // Επιλογή αντικειμένου χιονιού
         double snow=main.getDouble("3h"); // Ανάνγωση πεδίου ύψους χιονιού
                

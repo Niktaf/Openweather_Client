@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Mon Mar 12 10:18:12 EET 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-1949-d578-00000e392640 
-on database directory C:\Users\tafra\Desktop\java\Openweather_Client\dbWeather with class loader sun.misc.Launcher$AppClassLoader@6e0be858 
+Mon Mar 12 10:21:42 EET 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-194d-0b39-00000e4d4db8 
+on database directory C:\Users\tafra\Desktop\java\Openweather_Client\dbWeather with class loader sun.misc.Launcher$AppClassLoader@55f96302 
 Loaded from file:/C:/Users/tafra/Desktop/java/Openweather_Client/src/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_131-b11

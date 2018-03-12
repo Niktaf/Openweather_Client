@@ -24,6 +24,15 @@ public class Provlepsi5Hmerwn {
     private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού
     private Timestamp dt; // σφραγίδα χρονοσήμανσης
     private long cityID=0; // Κωδικός πόλης
+    private int city_num=0; // Το νούμερο θέσης στην πόλη στο json αρχείο που λαμβάνουμε. Στην 5μερη πρόβλεψη 
+    // δεν θα λαβουμε πληροφορίες για πολλές πόλεις μαζί αλλά για μία μόνο . Για αυτό το 0;
+    private String forecast; // Την μεταβλητή αυτήν θα την βάλουμε ως όρισμα για την δημιουργία αντικειμένου 
+    //αυτής της κλάσης γιατί θα χρειαστούμε για διαφορετικές πόλεις πρόβλεψη κάθε φορά .
+    
+    //Constructor
+    private Provlepsi5Hmerwn(String forecast){
+        this.forecast=forecast;
+    }
     
     public void Provlepsi5Imerwn() throws JSONException {
         
@@ -48,7 +57,7 @@ public class Provlepsi5Hmerwn {
             e.printStackTrace();
         }
         
-        JsonParser jp = new JsonParser(prognosis); // Αποσυνθέτης JSON string
+        JsonParser jp = new JsonParser(prognosis,city_num); // Αποσυνθέτης JSON string
                
         try {
             // Λήψη δεδομένων από το JSON string

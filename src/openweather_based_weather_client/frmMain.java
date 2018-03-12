@@ -4,8 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import openweather_based_weather_client.KairosTwra;
-import openweather_based_weather_client.Provlepsi5Hmerwn;
 import org.json.JSONException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;

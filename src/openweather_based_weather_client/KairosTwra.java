@@ -20,13 +20,24 @@ import org.json.JSONException;
 public class KairosTwra {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
+    private int city_num;
     private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
     private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
     private Timestamp dt;
     private long cityID=0; // Κωδικός πόλης
+    private String forecast;
     
-    public void TrexwnKairos() throws JSONException {
+    //Constructor
+    public KairosTwra (String forecast,int city_num){
+        this.city_num=city_num;
+        this.forecast=forecast;
+    }
+
+    KairosTwra() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public void TrexwnKairos(String forecast) throws JSONException {
         
         /*
          * Παρακάτω πραγματοποιείται δημιουργία του URI με το οποίο θα ζητηθούν από το OpenWeather
@@ -38,7 +49,7 @@ public class KairosTwra {
         */
 
         // Καθορισμός URI τρεχουσών καιρικών συνθηκών
-        String forecast = "http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
+       // String forecast = "http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
         
         OW_Collector ow = new OW_Collector(); // Συλλέκτης δεδομένων
         String prognosis = null; // Πρόγνωση
@@ -49,7 +60,7 @@ public class KairosTwra {
             e.printStackTrace();
         }
         
-        JsonParser jp = new JsonParser(prognosis); // Αποσυνθέτης JSON string
+        JsonParser jp = new JsonParser(prognosis,city_num); // Αποσυνθέτης JSON string
                
         try {
             // Λήψη δεδομένων από το JSON string
