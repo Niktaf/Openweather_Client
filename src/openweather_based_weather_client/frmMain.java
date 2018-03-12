@@ -157,7 +157,7 @@ public class frmMain extends javax.swing.JFrame {
     
     public void EnimerwsiTrexontwsKairou() throws SQLException, JSONException {
         KairosTwra kairos = new KairosTwra(); // Δημιουργία εξαγωγέα δεδομένων JSON
-        kairos.TrexwnKairos(); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
+        kairos.TrexwnKairos("http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47"); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
         
         // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
@@ -173,7 +173,7 @@ public class frmMain extends javax.swing.JFrame {
         insertData.setDouble(7, kairos.getRain());
         insertData.setDouble(8, kairos.getSnow());
         
-        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
+        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων στη βάση δεδομένων
         insertData = null; // Άδειασμα του αντικειμένου
                 
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
@@ -223,12 +223,9 @@ public class frmMain extends javax.swing.JFrame {
         model.addColumn("city_ic");
         dbCreate(); // Δημιουργία βάσης δεδομένων κατά την έναρξη της εφαρμογής αν αυτή δεν υπάρχει.
         EnimerwsiTrexontwsKairou();
-        LoadTable("SELECT * FROM TBL_WEATHERDATA");
-        
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
     }
-    
-    
-    
+   
     public void LoadTable(String sql) {
     try {
         Sindesi();
@@ -246,12 +243,6 @@ public class frmMain extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Exception: " + e.getMessage());
     }
 }
-    
-    
-    
-    
-    
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -709,7 +700,21 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnE3odosActionPerformed
 
     private void btnKairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKairosTwraActionPerformed
-        // TODO add your handling code here:
+        // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
+        if(lstCities.getSelectedIndex() == -1){
+            JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
+        }
+        else
+        {
+        model = new DefaultTableModel();
+        jTable1.setModel(model);
+        model.addColumn("id");
+        model.addColumn("city_ic");
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
+        }
+    }//GEN-LAST:event_btnKairosTwraActionPerformed
+
+    private void btnAnanewsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnanewsiActionPerformed
         // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
         if(lstCities.getSelectedIndex() == -1){
             JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
@@ -727,13 +732,8 @@ public class frmMain extends javax.swing.JFrame {
             } catch (JSONException ex) {
                 Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
-        LoadTable("SELECT * FROM TBL_WEATHERDATA");
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
         }
-    }//GEN-LAST:event_btnKairosTwraActionPerformed
-
-    private void btnAnanewsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnanewsiActionPerformed
-        // TODO add your handling code here:
-        jTable1.setModel(new DefaultTableModel()); // Καθαρισμός του πίνακα προβολής μετεορολογικών δεδομένων
     }//GEN-LAST:event_btnAnanewsiActionPerformed
 
     private void btnProvlepsi1asImerasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProvlepsi1asImerasActionPerformed
