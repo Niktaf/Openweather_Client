@@ -4,8 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import openweather_based_weather_client.KairosTwra;
-import openweather_based_weather_client.Provlepsi5Hmerwn;
 import org.json.JSONException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -14,155 +12,161 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 
 /**
  *
  * @author Παυλίδης Αριστείδης
  * @author Ταφραλίδης Νικόλαος
- * @author Τριανταφυλλίδης Τρύφων
- * ΘΕΣ-2 (2017-2018)
- */ 
-    
+ * @author Τριανταφυλλίδης Τρύφων ΘΕΣ-2 (2017-2018)
+ */
 public class frmMain extends javax.swing.JFrame {
-    
+
     private Connection conn = null; // Δημιουργία αντικειμένου σύνδεσης
-    
-    DefaultTableModel model;
-    
+
+    DefaultTableModel tableModel = new DefaultTableModel();
+    DefaultListModel listModel = new DefaultListModel();
+    DefaultComboBoxModel comboModel = new DefaultComboBoxModel();  
+
     // Αντικείμενα τα οποία φέρουν ερωτήματα του χρήστη προς τη βάση δεδομένων
     private PreparedStatement selectAll = null; // Επιλογή όλων των γραμμών
     private PreparedStatement selectCities = null; // Επιλογή δεδομένων με βάση τις πόλεις που επιλέγει ο χρήστης
     private PreparedStatement insertData = null; // Αντικείμενο εισαγωγής δεδομένων στη βάση δεδομένων
-        
+
     /*
      * Με τη μέθοδο dbCreate() πραγματοποιείται σύνδεση με τη βάση δεδομένων, αφού πρώτα οριστ;i
      * o driver με τον οποίο θα γίνει η σύνδεση και η βάση δεδομένων. Στην περίπτωση που δεν υπάρχει
      * η βάση δεδομένων, τότε θα δημιουργηθεί αυτόματα. Η ρουτίνα αυτή εκτελείται μια φορά, κατά την
      * εκκίνηση της εφαρμογής.
-    */
+     */
     public void dbCreate() throws SQLException {
-           try {
-                /*
+        try {
+            /*
                  * Σύνδεση με τη βάση δεδομένων. Αν αυτή δεν υπάρχει, τότε θα δημιουργθεί
                  * και θα διαμορφωθεί ανάλογα.
-                */
-                Sindesi();
-                
-                if (conn != null) { // Εάν πραγματοποιηθεί σύνδεση με τη βάση δεδομένων
-                               
+             */
+            Sindesi();
+
+            if (conn != null) { // Εάν πραγματοποιηθεί σύνδεση με τη βάση δεδομένων
+
                 /*
                  * Έλεγχος για το αν υπάρχουν οι απαιτούμενοι πίνακες στη βάση δεδομένων.
                  * Αν αυτοί δεν υπάρχουν, τότε θα δημιουργηθούν αυτόματα.
-                */
+                 */
                 DatabaseMetaData md = conn.getMetaData();
-                   
+
                 // Ορισμός του πίνακα αναζήτησης
                 ResultSet rsTables = md.getTables(null, null, "TBL_CITIES", null);
                 Statement createTable = conn.createStatement();
-                    
+
                 /*
                  * Έλεγχος για την ύπαρξη του πίνακα tbl_cities. Στην περίπτωση που δεν υπάρχει, 
                  * τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
-                */
+                 */
                 try {
-                    if (rsTables.next()) {} else {
-                    createTable.executeUpdate("CREATE TABLE TBL_CITIES ("
-                            + "city_id INTEGER NOT NULL, "
-                            + "city VARCHAR(40) NOT NULL, "
-                            + "PRIMARY KEY (city_ID))");
-                    
-                    // Εισαγωγή των πόλεων και των κωδικών αυτών κατά την δημιουργία της βάσης δεδομένων
-                    insertData = conn.prepareStatement("INSERT INTO APP.TBL_CITIES (CITY_ID, CITY) VALUES (264371, 'Αθήνα'), (734077, 'Θεσσαλονίκη'), (8133690, 'Πάτρα'), (8133786, 'Λάρισα'), (261743, 'Ηράκλειο')");
-                    insertData.executeUpdate(); // Εκτέλεση του ερωτήματος προς τη βάση δεδομένων
-                    insertData = null; // Άδειασμα του αντικειμένου
+                    if (rsTables.next()) {
+                    } else {
+                        createTable.executeUpdate("CREATE TABLE TBL_CITIES ("
+                                + "city_id INTEGER NOT NULL, "
+                                + "city VARCHAR(40) NOT NULL, "
+                                + "PRIMARY KEY (city_ID))");
+
+                        // Εισαγωγή των πόλεων και των κωδικών αυτών κατά την δημιουργία της βάσης δεδομένων
+                        insertData = conn.prepareStatement("INSERT INTO APP.TBL_CITIES (CITY_ID, CITY) VALUES (264371, 'Αθήνα'), (734077, 'Θεσσαλονίκη'), (8133690, 'Πάτρα'), (8133786, 'Λάρισα'), (261743, 'Ηράκλειο')");
+                        insertData.executeUpdate(); // Εκτέλεση του ερωτήματος προς τη βάση δεδομένων
+                        insertData = null; // Άδειασμα του αντικειμένου
                     }
-                } catch (SQLException ex) {}   
-                
-                    
+                } catch (SQLException ex) {
+                }
+
                 // Ομοίως και για τον πίνακα tbl_weatherdata 
                 // Ορισμός του πίνακα αναζήτησης
-                rsTables = md.getTables(null, null, "TBL_WEATHERDATA", null);                 
-                 
+                rsTables = md.getTables(null, null, "TBL_WEATHERDATA", null);
+
                 // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
                 try {
-                    if (rsTables.next()) {} else {
+                    if (rsTables.next()) {
+                    } else {
                         createTable.executeUpdate("CREATE TABLE TBL_WEATHERDATA ("
                                 + "id INTEGER GENERATED BY DEFAULT AS IDENTITY, "
                                 + "city_id INTEGER NOT NULL, "
                                 + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
                                 + "temperature DECIMAL(4,1) NOT NULL, "
                                 + "weather_description VARCHAR(255) NOT NULL, "
-                                + "clouds DECIMAL(4,1) NOT NULL, "
+                                + "clouds INTEGER NOT NULL, "
                                 + "wind_speed DECIMAL(5,1) NOT NULL, "
                                 + "dt TIMESTAMP NOT NULL, "
                                 + "rain INTEGER NOT NULL, "
                                 + "snow INTEGER NOT NULL, "
                                 + "PRIMARY KEY (id))");
                     }
-                } catch (SQLException ex) {} 
-                
+                } catch (SQLException ex) {
+                }
+
                 // Ομοίως και για τον πίνακα tbl_provlepseis 
                 // Ορισμός του πίνακα αναζήτησης
-                rsTables = md.getTables(null, null, "TBL_PROVLEPSEIS", null);                 
-                    
+                rsTables = md.getTables(null, null, "TBL_PROVLEPSEIS", null);
+
                 // Στην περίπτωση που δεν υπάρχει, τότε θα δημιουργηθεί και θα περιέχει τις παρακάτω στήλες
                 try {
-                    if (rsTables.next()) {} else {
+                    if (rsTables.next()) {
+                    } else {
                         createTable.executeUpdate("CREATE TABLE TBL_PROVLEPSEIS ("
                                 + "id INTEGER GENERATED BY DEFAULT AS IDENTITY, "
                                 + "city_id INTEGER NOT NULL, "
                                 + "FOREIGN KEY (city_id) REFERENCES tbl_cities (City_ID), "
                                 + "temperature DECIMAL(4,1) NOT NULL, "
                                 + "weather_description VARCHAR(255) NOT NULL, "
-                                + "clouds DECIMAL(4,1) NOT NULL, "
+                                + "clouds INTEGER NOT NULL, "
                                 + "wind_speed DECIMAL(5,1) NOT NULL, "
                                 + "dt TIMESTAMP NOT NULL, "
                                 + "rain INTEGER NOT NULL, "
                                 + "snow INTEGER NOT NULL, "
                                 + "PRIMARY KEY (id))");
                     }
-                } catch (SQLException ex) {}
-                
+                } catch (SQLException ex) {
+                }
+
                 // Κλείσιμο διάφορων αντικειμένων
                 rsTables.close();
                 createTable.close();
-                }
-            Aposindesi(); // Τερματισμός σύνδεσης με τη βάση δεδομένων
-                
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             }
+            Aposindesi(); // Τερματισμός σύνδεσης με τη βάση δεδομένων
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    
+    }
+
     // Δημιουργία αντικειμένου σύνδεσης με τη βάση δεδομένων
     public void Sindesi() throws SQLException {
+        
         try {
-                /*
+            /*
                  * Σύνδεση με τη βάση δεδομένων. Αν αυτή δεν υπάρχει, τότε θα δημιουργθεί
                  * και θα διαμορφωθεί ανάλογα.
-                */
-                String dbURL = "jdbc:derby:dbWeather;create=true";
-                conn = DriverManager.getConnection(dbURL);
+             */
+            String dbURL = "jdbc:derby:dbWeather;create=true";
+            conn = DriverManager.getConnection(dbURL);
 
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+        } catch (SQLException ex) { }
     }
-    
+
     // Αποσύνδεση από τη βάση
     public void Aposindesi() throws SQLException {
         conn.close(); // Κλείσιμο σύνδεσης
     }
-    
+
     public void EnimerwsiTrexontwsKairou() throws SQLException, JSONException {
         KairosTwra kairos = new KairosTwra(); // Δημιουργία εξαγωγέα δεδομένων JSON
         kairos.TrexwnKairos("http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47"); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
-        
+
         // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
         insertData = conn.prepareStatement("INSERT INTO tbl_weatherdata (city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow) VALUES (?,?,?,?,?,?,?,?)");
-        
+
         // Προετοιμασία μετεωρολογικών δεδομένων
         insertData.setLong(1, kairos.getCityID());
         insertData.setDouble(2, kairos.getTemp());
@@ -172,21 +176,22 @@ public class frmMain extends javax.swing.JFrame {
         insertData.setTimestamp(6, kairos.getDt());
         insertData.setDouble(7, kairos.getRain());
         insertData.setDouble(8, kairos.getSnow());
-        
+
         insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων στη βάση δεδομένων
         insertData = null; // Άδειασμα του αντικειμένου
-                
+
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
     }
-    
+
     public void ProvlepsiPen8imerou() throws SQLException, JSONException {
+
         Provlepsi5Hmerwn provlepsi = new Provlepsi5Hmerwn(); // Δημιουργία εξαγωγέα δεδομένων JSON
-        provlepsi.Provlepsi5Imerwn();// Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
+        provlepsi.Provlepsi5Imerwn("http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=fd798713a90f9501121e8dc78d7d0a47");// Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
-        
+
         // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
         insertData = conn.prepareStatement("INSERT INTO tbl_provlepseis (city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow) VALUES (?,?,?,?,?,?,?,?)");
-        
+
         // Προετοιμασία μετεωρολογικών δεδομένων
         insertData.setLong(1, provlepsi.getCityID());
         insertData.setDouble(2, provlepsi.getTemp());
@@ -196,53 +201,125 @@ public class frmMain extends javax.swing.JFrame {
         insertData.setTimestamp(6, provlepsi.getDt());
         insertData.setDouble(7, provlepsi.getRain());
         insertData.setDouble(8, provlepsi.getSnow());
-        
+
         insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
         insertData = null; // Άδειασμα του αντικειμένου
-                
+
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
     }
-    
+
     /**
-     * Δημιουργία νέας φόρμας frmMain. Κατά τη δημιουργία της φόρμας, εκτός από δημιουργία των 
-     * αντικειμένων που την απαρτίζουν, πραγματοποιείται και έλεγχος για την ύπαρξη της βάσης δεδομένων.
-     * Αν δεν υπάρχει, τότε δημιουργείται αυτόματα. Στη συνέχεια πραγματοποιείται λήψη καιρικών
-     * συνθηκών για όλες τις πόλεις από το openweather.org με κλήση του κατάλληλου URI και στη συνέχεια
-     * τα δεδομένα καταχωρούνται στη βάση δεδομένων προς περαιτέρω επεξεργασία.
-    */
-    
+     * Δημιουργία νέας φόρμας frmMain. Κατά τη δημιουργία της φόρμας, εκτός από
+     * δημιουργία των αντικειμένων που την απαρτίζουν, πραγματοποιείται και
+     * έλεγχος για την ύπαρξη της βάσης δεδομένων. Αν δεν υπάρχει, τότε
+     * δημιουργείται αυτόματα. Στη συνέχεια πραγματοποιείται λήψη καιρικών
+     * συνθηκών για όλες τις πόλεις από το openweather.org με κλήση του
+     * κατάλληλου URI και στη συνέχεια τα δεδομένα καταχωρούνται στη βάση
+     * δεδομένων προς περαιτέρω επεξεργασία.
+     */
     public frmMain() throws SQLException, JSONException {
+
         initComponents();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         KairosTwraPanel.setVisible(false); //Απόκρυψη πάνελ τρέχοντος καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         PrognwsiPanel.setVisible(false); //Απόκρυψη πάνελ πρόγνωσης καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         StatistikaPanel.setVisible(false); //Απόκρυψη πάνελ στατιστικών από το χρήστη, κατά την εκκίνηση του προγράμματος
+
+        jTable1.setModel(tableModel);
+        lstCities.setModel(listModel);
+        cbCities_Prognwsi.setModel(comboModel);
+        cbCities_Statistika.setModel(comboModel);
         
-        model = new DefaultTableModel();
-        jTable1.setModel(model);
-        model.addColumn("id");
-        model.addColumn("city_ic");
+        tableModel.addColumn("Κωδικός πόλης");
+        tableModel.addColumn("Θερμοκρασία");
+        tableModel.addColumn("Περιγραφή καιρού");
+        tableModel.addColumn("Νεφοκάλυψη");
+        tableModel.addColumn("Ταχύτητα ανέμου");
+        tableModel.addColumn("Ημερομηνία - Ώρα");
+        tableModel.addColumn("Ύψος βροχής");
+        tableModel.addColumn("Ύψος χιονιού");
         dbCreate(); // Δημιουργία βάσης δεδομένων κατά την έναρξη της εφαρμογής αν αυτή δεν υπάρχει.
         EnimerwsiTrexontwsKairou();
-        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
+        LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow FROM TBL_WEATHERDATA ORDER BY CITY_ID DESC");
+        LoadList("SELECT city FROM TBL_CITIES ORDER BY city");
+        LoadComboBox(cbCities_Prognwsi,"SELECT city FROM TBL_CITIES ORDER BY city");
+        LoadComboBox(cbCities_Statistika,"SELECT city FROM TBL_CITIES ORDER BY city");
     }
-   
+
+    /*
+     * Με τη μέθοδο LoadTable πραγματοποιείται εισαγωγή δεδομένων στον πίνακα jTable1
+     * σύμφωνα με το ερώτημα που θέτει ο χρήστης μέσω της παραμέτρου sql
+     */
     public void LoadTable(String sql) {
-    try {
-        Sindesi();
-        Statement sta = conn.createStatement();
+        try {
+            Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
+            Statement sta = conn.createStatement();
+            ResultSet rs = sta.executeQuery(sql);
 
-        java.sql.ResultSet rs = sta.executeQuery(sql);
+            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
+                tableModel.addRow(new Object[]{rs.getInt(1), rs.getDouble(2), rs.getString(3), rs.getInt(4),
+                    rs.getDouble(5), rs.getTimestamp(6), rs.getInt(7), rs.getInt(8)});
+            }
+            
+            rs.close();
+            sta.close();
+            Aposindesi();
 
-        while (rs.next()) {
-            model.addRow(new Object[]{rs.getInt(1), rs.getInt(2)});
+            // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
         }
-
-        sta.close();
-        Aposindesi();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Exception: " + e.getMessage());
     }
-}
+
+    /*
+     * Με τη μέθοδο LoadList πραγματοποιείται εισαγωγή δεδομένων στη λίστα JList
+     * σύμφωνα με το ερώτημα που θέτει ο χρήστης μέσω της παραμέτρου sql
+     */
+    public void LoadList(String sql) {
+        try {
+            Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
+            Statement sta = conn.createStatement();
+            ResultSet rs = sta.executeQuery(sql);
+
+            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
+                listModel.addElement(rs.getString(1));
+            }
+            
+            rs.close();
+            sta.close();
+            Aposindesi();
+
+            // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
+        }
+    }
+    
+    /*
+     * Με τη μέθοδο LoadComboBox πραγματοποιείται εισαγωγή δεδομένων στη σύνθετη λίστα JComboBox
+     * που θα επιλέξει ο χρήστης στο όρισμα antikeimeno. Τα εισαχθέντα δεδομένα επιλέγονται
+     * σύμφωνα με το ερώτημα που θέτει ο χρήστης μέσω της παραμέτρου sql
+     */
+    public void LoadComboBox(JComboBox antikeimeno, String sql) {
+        try {
+            Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
+            Statement sta = conn.createStatement();
+            ResultSet rs = sta.executeQuery(sql);
+
+            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
+                antikeimeno.addItem(rs.getString(1));
+            }
+
+            rs.close();
+            sta.close();
+            Aposindesi();
+
+            // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -282,6 +359,11 @@ public class frmMain extends javax.swing.JFrame {
         btnMinMaxTemp = new javax.swing.JButton();
         btnTempPerCity = new javax.swing.JButton();
         btnEpistrofi_Statistika = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        mnKairosTwra = new javax.swing.JMenu();
+        mnPrognwsi = new javax.swing.JMenu();
+        mnStatistics = new javax.swing.JMenu();
+        mnExit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Open Weather");
@@ -312,7 +394,7 @@ public class frmMain extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -405,11 +487,6 @@ public class frmMain extends javax.swing.JFrame {
 
         jLabel1.setText("Πόλη");
 
-        lstCities.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Αθήνα", "Θεσσαλονίκη", "Πάτρα", "Λάρισα", "Ηράκλειο" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(lstCities);
 
         javax.swing.GroupLayout KairosTwraPanelLayout = new javax.swing.GroupLayout(KairosTwraPanel);
@@ -449,8 +526,6 @@ public class frmMain extends javax.swing.JFrame {
         );
 
         jLabel2.setText("Πόλη: ");
-
-        cbCities_Prognwsi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Αθήνα", "Θεσσαλονίκη", "Πάτρα", "Λάρισα", "Ηράκλειο" }));
 
         btnProvlepsi1asImeras.setText("Πρόβλεψη καιρού 1ας ημέρας");
         btnProvlepsi1asImeras.setMaximumSize(new java.awt.Dimension(170, 25));
@@ -529,8 +604,6 @@ public class frmMain extends javax.swing.JFrame {
         );
 
         jLabel3.setText("Πόλη: ");
-
-        cbCities_Statistika.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Αθήνα", "Θεσσαλονίκη", "Πάτρα", "Λάρισα", "Ηράκλειο" }));
 
         btnMinMaxTemp.setText("Θερμοκρασία Min / Max");
         btnMinMaxTemp.setMaximumSize(new java.awt.Dimension(170, 25));
@@ -621,8 +694,22 @@ public class frmMain extends javax.swing.JFrame {
                 .addComponent(PrognwsiPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(StatistikaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(147, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
+
+        mnKairosTwra.setText("Ο καιρός τώρα");
+        jMenuBar1.add(mnKairosTwra);
+
+        mnPrognwsi.setText("Πρόγνωση καιρού");
+        jMenuBar1.add(mnPrognwsi);
+
+        mnStatistics.setText("Στατιστικά");
+        jMenuBar1.add(mnStatistics);
+
+        mnExit.setText("Έξοδος");
+        jMenuBar1.add(mnExit);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -650,8 +737,8 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnOKairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKairosTwraActionPerformed
         // TODO add your handling code here:
-        mainPanel.setVisible(false); //Απόκρυψη πάνελ κεντρικού μενού
-        KairosTwraPanel.setVisible(true); //Εμφάνιση πάνελ τρέχοντος καιρού
+        KairosTwraPanel.setVisible(true); //Απόκρυψη πάνελ τρέχοντος καιρού
+        mainPanel.setVisible(false); //Εμφάνιση πάνελ κεντρικού μενού
     }//GEN-LAST:event_btnOKairosTwraActionPerformed
 
     private void btnEpistrofi_KairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEpistrofi_KairosTwraActionPerformed
@@ -701,30 +788,26 @@ public class frmMain extends javax.swing.JFrame {
 
     private void btnKairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKairosTwraActionPerformed
         // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
-        if(lstCities.getSelectedIndex() == -1){
+        if (lstCities.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
-        }
-        else
-        {
-        model = new DefaultTableModel();
-        jTable1.setModel(model);
-        model.addColumn("id");
-        model.addColumn("city_ic");
-        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
+        } else {
+            tableModel = new DefaultTableModel();
+            jTable1.setModel(tableModel);
+            tableModel.addColumn("id");
+            tableModel.addColumn("city_ic");
+            LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
         }
     }//GEN-LAST:event_btnKairosTwraActionPerformed
-
+    
     private void btnAnanewsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnanewsiActionPerformed
         // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
-        if(lstCities.getSelectedIndex() == -1){
+        if (lstCities.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
-        }
-        else
-        {
-        model = new DefaultTableModel();
-        jTable1.setModel(model);
-        model.addColumn("id");
-        model.addColumn("city_ic");
+        } else {
+            tableModel = new DefaultTableModel();
+            jTable1.setModel(tableModel);
+            tableModel.addColumn("id");
+            tableModel.addColumn("city_ic");
             try {
                 EnimerwsiTrexontwsKairou();
             } catch (SQLException ex) {
@@ -732,7 +815,7 @@ public class frmMain extends javax.swing.JFrame {
             } catch (JSONException ex) {
                 Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
-        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
+            LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
         }
     }//GEN-LAST:event_btnAnanewsiActionPerformed
 
@@ -792,7 +875,7 @@ public class frmMain extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel KairosTwraPanel;
     private javax.swing.JPanel PrognwsiPanel;
@@ -816,6 +899,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -823,5 +907,9 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JList<String> lstCities;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenu mnExit;
+    private javax.swing.JMenu mnKairosTwra;
+    private javax.swing.JMenu mnPrognwsi;
+    private javax.swing.JMenu mnStatistics;
     // End of variables declaration//GEN-END:variables
 }

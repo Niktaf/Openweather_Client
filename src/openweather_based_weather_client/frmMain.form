@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="mnKairosTwra">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x39f; &#x3ba;&#x3b1;&#x3b9;&#x3c1;&#x3cc;&#x3c2; &#x3c4;&#x3ce;&#x3c1;&#x3b1;"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mnPrognwsi">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x3a0;&#x3c1;&#x3cc;&#x3b3;&#x3bd;&#x3c9;&#x3c3;&#x3b7; &#x3ba;&#x3b1;&#x3b9;&#x3c1;&#x3bf;&#x3cd;"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mnStatistics">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x3a3;&#x3c4;&#x3b1;&#x3c4;&#x3b9;&#x3c3;&#x3c4;&#x3b9;&#x3ba;&#x3ac;"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mnExit">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x388;&#x3be;&#x3bf;&#x3b4;&#x3bf;&#x3c2;"/>
+          </Properties>
+        </Menu>
+      </SubComponents>
+    </Menu>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Open Weather"/>
   </Properties>
   <SyntheticProperties>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
@@ -63,7 +90,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="617" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="596" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -175,7 +202,7 @@
                   <Component id="PrognwsiPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="StatistikaPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="147" max="32767" attributes="0"/>
+                  <EmptySpace pref="126" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -369,13 +396,7 @@
                 <Component class="javax.swing.JList" name="lstCities">
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                      <StringArray count="5">
-                        <StringItem index="0" value="&#x391;&#x3b8;&#x3ae;&#x3bd;&#x3b1;"/>
-                        <StringItem index="1" value="&#x398;&#x3b5;&#x3c3;&#x3c3;&#x3b1;&#x3bb;&#x3bf;&#x3bd;&#x3af;&#x3ba;&#x3b7;"/>
-                        <StringItem index="2" value="&#x3a0;&#x3ac;&#x3c4;&#x3c1;&#x3b1;"/>
-                        <StringItem index="3" value="&#x39b;&#x3ac;&#x3c1;&#x3b9;&#x3c3;&#x3b1;"/>
-                        <StringItem index="4" value="&#x397;&#x3c1;&#x3ac;&#x3ba;&#x3bb;&#x3b5;&#x3b9;&#x3bf;"/>
-                      </StringArray>
+                      <StringArray count="0"/>
                     </Property>
                   </Properties>
                   <AuxValues>
@@ -438,17 +459,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbCities_Prognwsi">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="&#x391;&#x3b8;&#x3ae;&#x3bd;&#x3b1;"/>
-                    <StringItem index="1" value="&#x398;&#x3b5;&#x3c3;&#x3c3;&#x3b1;&#x3bb;&#x3bf;&#x3bd;&#x3af;&#x3ba;&#x3b7;"/>
-                    <StringItem index="2" value="&#x3a0;&#x3ac;&#x3c4;&#x3c1;&#x3b1;"/>
-                    <StringItem index="3" value="&#x39b;&#x3ac;&#x3c1;&#x3b9;&#x3c3;&#x3b1;"/>
-                    <StringItem index="4" value="&#x397;&#x3c1;&#x3ac;&#x3ba;&#x3bb;&#x3b5;&#x3b9;&#x3bf;"/>
-                  </StringArray>
-                </Property>
-              </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -568,17 +578,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbCities_Statistika">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="&#x391;&#x3b8;&#x3ae;&#x3bd;&#x3b1;"/>
-                    <StringItem index="1" value="&#x398;&#x3b5;&#x3c3;&#x3c3;&#x3b1;&#x3bb;&#x3bf;&#x3bd;&#x3af;&#x3ba;&#x3b7;"/>
-                    <StringItem index="2" value="&#x3a0;&#x3ac;&#x3c4;&#x3c1;&#x3b1;"/>
-                    <StringItem index="3" value="&#x39b;&#x3ac;&#x3c1;&#x3b9;&#x3c3;&#x3b1;"/>
-                    <StringItem index="4" value="&#x397;&#x3c1;&#x3ac;&#x3ba;&#x3bb;&#x3b5;&#x3b9;&#x3bf;"/>
-                  </StringArray>
-                </Property>
-              </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
