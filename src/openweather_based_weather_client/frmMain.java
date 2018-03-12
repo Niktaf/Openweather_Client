@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.Vector;
+
 
 /**
  *
@@ -25,6 +25,8 @@ import java.util.Vector;
 public class frmMain extends javax.swing.JFrame {
     
     private Connection conn = null; // Δημιουργία αντικειμένου σύνδεσης
+    
+    DefaultTableModel model;
     
     // Αντικείμενα τα οποία φέρουν ερωτήματα του χρήστη προς τη βάση δεδομένων
     private PreparedStatement selectAll = null; // Επιλογή όλων των γραμμών
@@ -153,7 +155,7 @@ public class frmMain extends javax.swing.JFrame {
     
     public void EnimerwsiTrexontwsKairou() throws SQLException, JSONException {
         KairosTwra kairos = new KairosTwra(); // Δημιουργία εξαγωγέα δεδομένων JSON
-        kairos.TrexwnKairos(); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
+        kairos.TrexwnKairos("http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47"); // Λήψη δεδομένων τρεχουσών καιρικών συνθηκών
         Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
         
         // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
@@ -169,7 +171,7 @@ public class frmMain extends javax.swing.JFrame {
         insertData.setDouble(7, kairos.getRain());
         insertData.setDouble(8, kairos.getSnow());
         
-        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
+        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων στη βάση δεδομένων
         insertData = null; // Άδειασμα του αντικειμένου
                 
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
@@ -212,10 +214,33 @@ public class frmMain extends javax.swing.JFrame {
         KairosTwraPanel.setVisible(false); //Απόκρυψη πάνελ τρέχοντος καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         PrognwsiPanel.setVisible(false); //Απόκρυψη πάνελ πρόγνωσης καιρού από το χρήστη, κατά την εκκίνηση του προγράμματος
         StatistikaPanel.setVisible(false); //Απόκρυψη πάνελ στατιστικών από το χρήστη, κατά την εκκίνηση του προγράμματος
-        jTable1.setModel(new DefaultTableModel()); // Καθαρισμός του πίνακα προβολής μετεορολογικών δεδομένων
-        dbCreate(); // Σύνδεση με τη βάση δεδομένων κατά την έναρξη της εφαρμογής.
+        
+        model = new DefaultTableModel();
+        jTable1.setModel(model);
+        model.addColumn("id");
+        model.addColumn("city_ic");
+        dbCreate(); // Δημιουργία βάσης δεδομένων κατά την έναρξη της εφαρμογής αν αυτή δεν υπάρχει.
         EnimerwsiTrexontwsKairou();
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
     }
+   
+    public void LoadTable(String sql) {
+    try {
+        Sindesi();
+        Statement sta = conn.createStatement();
+
+        java.sql.ResultSet rs = sta.executeQuery(sql);
+
+        while (rs.next()) {
+            model.addRow(new Object[]{rs.getInt(1), rs.getInt(2)});
+        }
+
+        sta.close();
+        Aposindesi();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Exception: " + e.getMessage());
+    }
+}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -673,29 +698,40 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnE3odosActionPerformed
 
     private void btnKairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKairosTwraActionPerformed
-        // TODO add your handling code here:
         // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
         if(lstCities.getSelectedIndex() == -1){
             JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
         }
         else
         {
-            jTable1.setModel(new DefaultTableModel()); // Καθαρισμός του πίνακα προβολής μετεορολογικών δεδομένων
-            try {
-                Sindesi(); // Σύνδεση με τη βάση δεδομένων
-                selectAll = conn.prepareStatement("SELECT * FROM TBL_WEATHERDATA"); // Συλλογή δεδομένων
-                selectAll.executeUpdate(); // Εκτέλεση ερωτήματος
-                Aposindesi(); // Αποσύνδεση από τη βάση δεδομένων
-
-            } catch (SQLException ex) {
-                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        model = new DefaultTableModel();
+        jTable1.setModel(model);
+        model.addColumn("id");
+        model.addColumn("city_ic");
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
         }
     }//GEN-LAST:event_btnKairosTwraActionPerformed
 
     private void btnAnanewsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnanewsiActionPerformed
-        // TODO add your handling code here:
-        jTable1.setModel(new DefaultTableModel()); // Καθαρισμός του πίνακα προβολής μετεορολογικών δεδομένων
+        // Ενημέρωση του χρήστη ότι δεν έχει επιλέξει καμία πόλη
+        if(lstCities.getSelectedIndex() == -1){
+            JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη.");
+        }
+        else
+        {
+        model = new DefaultTableModel();
+        jTable1.setModel(model);
+        model.addColumn("id");
+        model.addColumn("city_ic");
+            try {
+                EnimerwsiTrexontwsKairou();
+            } catch (SQLException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (JSONException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        LoadTable("SELECT * FROM TBL_WEATHERDATA ORDER BY ID DESC");
+        }
     }//GEN-LAST:event_btnAnanewsiActionPerformed
 
     private void btnProvlepsi1asImerasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProvlepsi1asImerasActionPerformed
