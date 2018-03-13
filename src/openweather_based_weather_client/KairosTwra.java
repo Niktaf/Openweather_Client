@@ -7,7 +7,9 @@ package openweather_based_weather_client;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import org.json.JSONException;
+import openweather_based_weather_client.KairosPolis;
 
 /**
  *
@@ -25,8 +27,9 @@ public class KairosTwra {
     private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
     private Timestamp dt;
     private long cityID=0; // Κωδικός πόλης
+    public ArrayList<KairosPolis> arKP = new ArrayList<>();
     
-    public void TrexwnKairos() throws JSONException {
+    public void TrexwnKairos(String forecast) throws JSONException {
         
         /*
          * Παρακάτω πραγματοποιείται δημιουργία του URI με το οποίο θα ζητηθούν από το OpenWeather
@@ -36,33 +39,51 @@ public class KairosTwra {
          * ΑΡΧΗ
          *
         */
-
-        // Καθορισμός URI τρεχουσών καιρικών συνθηκών
-        String forecast = "http://api.openweathermap.org/data/2.5/group?id=734077&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47";
-        
         OW_Collector ow = new OW_Collector(); // Συλλέκτης δεδομένων
         String prognosis = null; // Πρόγνωση
-     
+
         try {
             prognosis = ow.HttpGet(forecast); // Λήψη δεδομένων σε μορφή JSON από τον κεντρικό εξυπηρετητή
         } catch (IOException e) { // Διαχείριση εξαιρέσεων 
             e.printStackTrace();
         }
-        
+
         JsonParser jp = new JsonParser(prognosis); // Αποσυνθέτης JSON string
-               
-        try {
-            // Λήψη δεδομένων από το JSON string
-            temp = jp.get_Temp();
-            name = jp.get_City();
-            desc = jp.get_WeatherDesc();
-            clouds = jp.get_CloudsAll();
-            dt = jp.get_DateTime();
-            cityID = jp.get_CityID();
-            wind = jp.get_WindSpeed();
-        } catch (JSONException e) { // Διαχείριση εξαιρέσεων
-            e.printStackTrace();
+        
+        /* Λήψη πλήθους εγγραφών που αντιστοιχούν στις πόλεις οι οποίες περιέχονται
+         * μέσα στο JSON string
+        */
+        int metritisEggrafwn = (int) jp.get_NumOfRecs(); 
+                
+        for (int i = 0; i < metritisEggrafwn; i++) {
+            KairosPolis kp = new KairosPolis(); // Δημιουργία κλάσης για κάθε πόλη
+            try {
+                /* Λήψη δεδομένων από το JSON string και τοποθέτησή 
+                 * τους μέσα στην κλάση της κάθε πόλης
+                */
+                kp.setTemp(jp.get_Temp(i));
+                kp.setDesc(jp.get_WeatherDesc(i));
+                kp.setClouds(jp.get_CloudsAll(i));
+                kp.setDt(jp.get_DateTime(i));
+                kp.setCityID(jp.get_CityID(i));
+                kp.setWind(jp.get_WindSpeed(i));
+                try {
+                    kp.setRain(jp.get_Rain(i));
+                
+                } catch (Exception ex) {
+                    kp.setRain(0);
+                }
+                try {
+                    kp.setSnow(jp.get_Snow(i));
+                } catch (Exception ex) {
+                    kp.setSnow(0);
+                }
+                arKP.add(kp); // Εισαγωγή της κλάσης που ολοκληρώθηκε η εισαγωγή των δεδομένων, στην Arraylist
+            } catch (JSONException e) { // Διαχείριση εξαιρέσεων
+                e.printStackTrace();
+            }
         }
+
         
         /*
          *

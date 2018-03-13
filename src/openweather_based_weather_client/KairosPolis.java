@@ -19,10 +19,14 @@ public class KairosPolis {
     // Διάφορες μεταβλητές και αρχικοποίησή τους
     private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
-    private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
-    private Timestamp dt;
+    private String desc=""; // Περιγραφή καιρού
+    private Timestamp dt; // Χρονοσφραγίδα πληροφορίας
     private long cityID=0; // Κωδικός πόλης
-
+    
+    //Κατασκευαστής κλάσης
+    public KairosPolis(){
+    }
+    
     public double getTemp() {
         return temp;
     }
@@ -61,14 +65,6 @@ public class KairosPolis {
 
     public void setClouds(int clouds) {
         this.clouds = clouds;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDesc() {
