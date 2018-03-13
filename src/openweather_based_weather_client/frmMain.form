@@ -8,6 +8,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x39f; &#x3ba;&#x3b1;&#x3b9;&#x3c1;&#x3cc;&#x3c2; &#x3c4;&#x3ce;&#x3c1;&#x3b1;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnKairosTwraActionPerformed"/>
+          </Events>
         </Menu>
         <Menu class="javax.swing.JMenu" name="mnPrognwsi">
           <Properties>
