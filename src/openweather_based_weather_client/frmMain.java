@@ -230,6 +230,8 @@ public final class frmMain extends javax.swing.JFrame {
      * συνθηκών για όλες τις πόλεις από το openweather.org με κλήση του
      * κατάλληλου URI και στη συνέχεια τα δεδομένα καταχωρούνται στη βάση
      * δεδομένων προς περαιτέρω επεξεργασία.
+     * @throws java.sql.SQLException
+     * @throws org.json.JSONException
      */
     public frmMain() throws SQLException, JSONException {
 
@@ -297,22 +299,18 @@ public final class frmMain extends javax.swing.JFrame {
     public void LoadTable(String sql) {
         try {
             Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
-            Statement sta = conn.createStatement();
-            ResultSet rs = sta.executeQuery(sql);
-
-            tableModel.setRowCount(0); // Καθαρισμός του πίνακα jTable1
-
-            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
-                tableModel.addRow(new Object[]{rs.getInt(1), rs.getDouble(2), rs.getString(3), rs.getInt(4),
-                    rs.getDouble(5), rs.getTimestamp(6), rs.getInt(7), rs.getInt(8)});
+            try (Statement sta = conn.createStatement(); ResultSet rs = sta.executeQuery(sql)) {                tableModel.setRowCount(0); // Καθαρισμός του πίνακα jTable1
+                
+                while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet
+                    tableModel.addRow(new Object[]{rs.getInt(1), rs.getDouble(2), rs.getString(3), rs.getInt(4),
+                        rs.getDouble(5), rs.getTimestamp(6), rs.getInt(7), rs.getInt(8)});
+                }
+                
             }
-
-            rs.close();
-            sta.close();
             Aposindesi();
 
             // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
         }
     }
@@ -324,18 +322,16 @@ public final class frmMain extends javax.swing.JFrame {
     public void LoadList(String sql) {
         try {
             Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
-            Statement sta = conn.createStatement();
-            ResultSet rs = sta.executeQuery(sql);
-            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
-                listModel.addElement(rs.getString(1));
+            try (Statement sta = conn.createStatement(); ResultSet rs = sta.executeQuery(sql)) {
+                while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet
+                    listModel.addElement(rs.getString(1));
+                }
+                
             }
-
-            rs.close();
-            sta.close();
             Aposindesi();
 
             // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
         }
     }
@@ -348,19 +344,17 @@ public final class frmMain extends javax.swing.JFrame {
     public void LoadComboBox(JComboBox antikeimeno, String sql) {
         try {
             Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
-            Statement sta = conn.createStatement();
-            ResultSet rs = sta.executeQuery(sql);
-
-            while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
-                antikeimeno.addItem(rs.getString(1));
+            try (Statement sta = conn.createStatement(); ResultSet rs = sta.executeQuery(sql)) {
+                
+                while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet
+                    antikeimeno.addItem(rs.getString(1));
+                }
+                
             }
-
-            rs.close();
-            sta.close();
             Aposindesi();
 
             // Σύλληψη εξαίρεσης και ενημέρωση του χρήστη σχετικά με το σφάλμα που προέκυψε    
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Σφάλμα: " + e.getMessage());
         }
     }
