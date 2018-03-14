@@ -856,9 +856,7 @@ public final class frmMain extends javax.swing.JFrame {
         try {
             EnimerwsiTrexontwsKairou("http://api.openweathermap.org/data/2.5/group?id=264371,734077,8133690,8133786,261743&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47");
             btnKairosTwraActionPerformed(evt);
-        } catch (SQLException ex) {
-            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
+        } catch (SQLException | JSONException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -899,26 +897,22 @@ public final class frmMain extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(frmMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     new frmMain().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (JSONException ex) {
+                } catch (SQLException | JSONException ex) {
                     Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
