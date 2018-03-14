@@ -22,7 +22,7 @@ import javax.swing.JComboBox;
  * @author Ταφραλίδης Νικόλαος
  * @author Τριανταφυλλίδης Τρύφων ΘΕΣ-2 (2017-2018)
  */
-public class frmMain extends javax.swing.JFrame {
+public final class frmMain extends javax.swing.JFrame {
 
     private Connection conn = null; // Δημιουργία αντικειμένου σύνδεσης
 
@@ -138,9 +138,7 @@ public class frmMain extends javax.swing.JFrame {
             }
             Aposindesi(); // Τερματισμός σύνδεσης με τη βάση δεδομένων
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        } catch (SQLException ex) {}
     }
 
     // Δημιουργία αντικειμένου σύνδεσης με τη βάση δεδομένων
@@ -153,14 +151,18 @@ public class frmMain extends javax.swing.JFrame {
              */
             String dbURL = "jdbc:derby:dbWeather;create=true";
             conn = DriverManager.getConnection(dbURL);
-
         } catch (SQLException ex) {
         }
     }
 
     // Αποσύνδεση από τη βάση
     public void Aposindesi() throws SQLException {
-        conn.close(); // Κλείσιμο σύνδεσης
+        try {
+            if (!conn.isClosed()) {
+                conn.close(); // Κλείσιμο σύνδεσης
+            }
+        } catch (SQLException ex) {
+        }
     }
 
     public void EnimerwsiTrexontwsKairou(String apiURL) throws SQLException, JSONException {
@@ -253,27 +255,39 @@ public class frmMain extends javax.swing.JFrame {
         tableModel.addColumn("Ύψος χιονιού");
 
         dbCreate(); // Δημιουργία βάσης δεδομένων κατά την έναρξη της εφαρμογής αν αυτή δεν υπάρχει.
-
+        
+        /* 
+         * Με τη μέθοδο EnimerwsiTrexontwsKairou πραγματοποιείται λήψη μετεωρολογικών δεδομένων όλων των πόλεων
+         * και προβάλονται στον χρήστη μόνο τα δεδομένα για τις πόλεις που επέλεξε στη λίστα lstCities
+        */
         EnimerwsiTrexontwsKairou("http://api.openweathermap.org/data/2.5/group?id=264371,734077,8133690,8133786,261743&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47");
-        LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow FROM TBL_WEATHERDATA ORDER BY DT DESC");
+        
+        // Εμφάνιση όλων των δεδομένων στο αντικείμενο JTable ταξινομημένα από το πιο πρόσφατο προς το πιο παλιό
+        LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow "
+                + "FROM TBL_WEATHERDATA ORDER BY DT DESC");
+        
+        // Φόρτωση των πόλεων στα αντικείμενο lstCities
         LoadList("SELECT city FROM TBL_CITIES ORDER BY city");
+        
+        // Φόρτωση των πόλεων στα αντικείμενο cb_Cities_Prognwsi και cbCities_Statistika
         LoadComboBox(cbCities_Prognwsi, "SELECT city FROM TBL_CITIES ORDER BY city");
         LoadComboBox(cbCities_Statistika, "SELECT city FROM TBL_CITIES ORDER BY city");
-        
+        /*
         // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
         Sindesi();
         Statement sta = conn.createStatement();
         // Συλλογή των κωδικών πόλεων από τη βάση δεδομένων
-        ResultSet rs = sta.executeQuery("SELECT city_ID FROM TBL_CITIES"); 
+        ResultSet rs = sta.executeQuery("SELECT city_ID FROM TBL_CITIES");
         /* Για κάθε κωδικό πόλης που βρέθηκε, ζήτηση και λήψη μετεωρολογικών
          * δεδομένων για πρόβλεψη καιρού πενθημέρου και στη συνέχεια καταχώρηση
          * αυτών στη βάση δεδομένων
-        */
-        while(rs.next()) { 
-            ProvlepsiPen8imerou("http://api.openweathermap.org/data/2.5/forecast?id="+rs.getLong(1)+"&appid=fd798713a90f9501121e8dc78d7d0a47");
+         */
+ /*        for (int i = 1; i <= lstCities.getComponentCount(); i++) {
+            ProvlepsiPen8imerou("http://api.openweathermap.org/data/2.5/forecast?id=" + rs.getLong(1) + "&appid=fd798713a90f9501121e8dc78d7d0a47");
         }
-        
+
         Aposindesi(); // Αποσύνδεση από τη βάση
+         */
     }
 
     /*
@@ -822,13 +836,32 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnE3odosActionPerformed
 
     private void btnKairosTwraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKairosTwraActionPerformed
-
+        
+        //Λήψη των επιλεγμένων πόλεων από τον χρήστη
+        if(lstCities.getSelectedIndex() != -1) {
+        String poleis = "";
+        Object obj[] = lstCities.getSelectedValues();
+        for (int i = 0; i < obj.length; i++) {
+            if (i == 0) {
+                poleis += "'" + (String) obj[i] + "'";
+            } else {
+                poleis += " OR city='" + (String) obj[i] + "'";
+            }
+        }
+        
+        // Επιλογή και εμφάνιση του αποτελέσματος στον πίνακα JTable1
+        LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow "
+                + "FROM TBL_WEATHERDATA WHERE city_ID IN (SELECT city_ID FROM TBL_CITIES WHERE city=" + poleis + ")ORDER BY DT DESC");
+        } else {
+            JOptionPane.showMessageDialog(null, "Δεν έχετε επιλέξει καμία πόλη");
+        }
     }//GEN-LAST:event_btnKairosTwraActionPerformed
 
     private void btnAnanewsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnanewsiActionPerformed
+       
         try {
             EnimerwsiTrexontwsKairou("http://api.openweathermap.org/data/2.5/group?id=264371,734077,8133690,8133786,261743&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47");
-            LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow FROM TBL_WEATHERDATA ORDER BY DT DESC");
+            btnKairosTwraActionPerformed(evt);
         } catch (SQLException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
