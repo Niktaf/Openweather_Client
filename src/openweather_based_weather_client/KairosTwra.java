@@ -22,7 +22,7 @@ import openweather_based_weather_client.KairosPolis;
 public class KairosTwra {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
-    private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
+    private double temp = 0, snow = 0, rain = 0, wind = 0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
     private String desc=""; // Περιγραφή καιρού 
     private Timestamp dt;  // Σφραγίδα χρονοσήμανσης
@@ -75,7 +75,7 @@ public class KairosTwra {
                 }
                 try {
                     kp.setSnow(jp.get_Snow(i));
-                } catch (Exception ex) {
+                } catch (JSONException ex) {
                     kp.setSnow(0);
                 }
                 arKP.add(kp); // Εισαγωγή της κλάσης που ολοκληρώθηκε η εισαγωγή των δεδομένων, στην Arraylist
