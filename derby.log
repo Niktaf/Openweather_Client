@@ -1,13 +1,16 @@
+Wed Mar 14 02:02:36 EET 2018 : Apache Derby Network Server - 10.14.1.0 - (1808820) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Tue Mar 13 22:54:13 EET 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-2124-596f-000002e78f18 
-on database directory D:\Users\Ξ‘ΟΞΉΟƒΟ„ΞµΞ―Ξ΄Ξ·Ο‚\Downloads\Ξ Ξ›Ξ— 24\3Ξ· ΞµΟΞ³Ξ±ΟƒΞ―Ξ±\Openweather_Client\dbWeather with class loader sun.misc.Launcher$AppClassLoader@55f96302 
-Loaded from file:/D:/Users/%ce%91%cf%81%ce%b9%cf%83%cf%84%ce%b5%ce%af%ce%b4%ce%b7%cf%82/Downloads/%ce%a0%ce%9b%ce%97%2024/3%ce%b7%20%ce%b5%cf%81%ce%b3%ce%b1%cf%83%ce%af%ce%b1/Openweather_Client/src/openweather_based_weather_client/lib/derby.jar
+Wed Mar 14 02:02:36 EET 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0162-21d0-d1d5-ffffdc882f3f 
+on database directory D:\Users\Αριστείδης\Downloads\ΠΛΗ 24\3η εργασία\Openweather_Client\dbWeather with class loader sun.misc.Launcher$AppClassLoader@1d44bcfa 
+Loaded from file:/C:/Program%20Files/Java/jdk1.8.0_151/db/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_151-b12
-user.dir=D:\Users\Ξ‘ΟΞΉΟƒΟ„ΞµΞ―Ξ΄Ξ·Ο‚\Downloads\Ξ Ξ›Ξ— 24\3Ξ· ΞµΟΞ³Ξ±ΟƒΞ―Ξ±\Openweather_Client
+user.dir=C:\Program Files\Java\jdk1.8.0_151\db
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0
-derby.system.home=null
+derby.system.home=D:\Users\Αριστείδης\Downloads\ΠΛΗ 24\3η εργασία\Openweather_Client
 Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Wed Mar 14 02:04:14 EET 2018: Shutting down Derby engine

@@ -17,7 +17,9 @@ import java.sql.Timestamp;
 public class KairosPolis {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
-    private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
+    
+    // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου, ελάχιστη θερμοκρασία, μέγιστη θερμοκρασία
+    private double temp=0, snow=0, rain=0, wind=0, temp_min=0, temp_max=0; 
     private int clouds=0; // Νεφοκάλυψη ουρανού
     private String desc=""; // Περιγραφή καιρού
     private Timestamp dt; // Χρονοσφραγίδα πληροφορίας
@@ -89,6 +91,22 @@ public class KairosPolis {
 
     public void setCityID(long cityID) {
         this.cityID = cityID;
+    }
+
+    public double getTemp_min() {
+        return temp_min;
+    }
+
+    public void setTemp_min(double temp_min) {
+        this.temp_min = temp_min;
+    }
+
+    public double getTemp_max() {
+        return temp_max;
+    }
+
+    public void setTemp_max(double temp_max) {
+        this.temp_max = temp_max;
     }
     
     

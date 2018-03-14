@@ -24,8 +24,8 @@ public class KairosTwra {
     // Διάφορες μεταβλητές και αρχικοποίησή τους
     private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
     private int clouds=0; // Νεφοκάλυψη ουρανού
-    private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού, σφραγίδα χρονοσήμανσης
-    private Timestamp dt;
+    private String desc=""; // Περιγραφή καιρού 
+    private Timestamp dt;  // Σφραγίδα χρονοσήμανσης
     private long cityID=0; // Κωδικός πόλης
     public ArrayList<KairosPolis> arKP = new ArrayList<>();
     
@@ -93,7 +93,7 @@ public class KairosTwra {
     }
     
     /*
-     * GETTERS KAI SETTERS
+     * GETTERS
      * ΑΡΧΗ
     */
     public double getTemp() {
@@ -112,10 +112,6 @@ public class KairosTwra {
         return clouds;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -131,8 +127,9 @@ public class KairosTwra {
     public double getWindSpeed() {
         return wind;
     }
+    
     /*
-     * GETTERS KAI SETTERS
+     * GETTERS
      * ΤΕΛΟΣ
     */
 }

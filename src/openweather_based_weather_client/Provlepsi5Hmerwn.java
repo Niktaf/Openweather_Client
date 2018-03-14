@@ -20,10 +20,12 @@ import org.json.JSONException;
 public class Provlepsi5Hmerwn {
     
     // Διάφορες μεταβλητές και αρχικοποίησή τους
-    private double temp=0, snow=0, rain=0, wind=0; // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου
+    
+    // θερμοκρασία, χιόνι, βροχή, ταχύτητα ανέμου, ελάχιστη θερμοκρασία, μέγιστη θερμοκρασία
+    private double temp=0, snow=0, rain=0, wind=0, temp_min=0, temp_max=0; 
     private int clouds=0; // Νεφοκάλυψη ουρανού
-    private String name="", desc=""; // Όνομα πόλης, περιγραφή καιρού
-    private Timestamp dt; // σφραγίδα χρονοσήμανσης
+    private String desc=""; // Περιγραφή καιρού
+    private Timestamp dt; // Σφραγίδα χρονοσήμανσης
     private long cityID=0; // Κωδικός πόλης
     public ArrayList<KairosPolis> arKP_5hmerwn = new ArrayList<>();
     
@@ -60,10 +62,12 @@ public class Provlepsi5Hmerwn {
                  * τους μέσα στην κλάση της κάθε πόλης
                 */
                 kp_5hmerwn.setTemp(jp.get_Temp(i));
+                kp_5hmerwn.setTemp_max(jp.get_maxTemp(i));
+                kp_5hmerwn.setTemp_min(jp.get_minTemp(i));
                 kp_5hmerwn.setDesc(jp.get_WeatherDesc(i));
                 kp_5hmerwn.setClouds(jp.get_CloudsAll(i));
                 kp_5hmerwn.setDt(jp.get_DateTime(i));
-                kp_5hmerwn.setCityID(jp.get_CityID(i));
+                kp_5hmerwn.setCityID(jp.get_CityID_5Hmerwn());
                 kp_5hmerwn.setWind(jp.get_WindSpeed(i));
                 try {
                     kp_5hmerwn.setRain(jp.get_Rain(i));
@@ -91,7 +95,7 @@ public class Provlepsi5Hmerwn {
     }
     
     /*
-     * GETTERS KAI SETTERS
+     * GETTERS
      * APXH
     */
     
@@ -107,12 +111,12 @@ public class Provlepsi5Hmerwn {
         return rain;
     }
 
-    public int getClouds() {
-        return clouds;
+    public double getWind() {
+        return wind;
     }
 
-    public String getName() {
-        return name;
+    public int getClouds() {
+        return clouds;
     }
 
     public String getDesc() {
@@ -126,13 +130,18 @@ public class Provlepsi5Hmerwn {
     public long getCityID() {
         return cityID;
     }
-    
-    public double getWindSpeed() {
-        return wind;
+      
+    public double getTemp_min() {
+        return temp_min;
+    }
+
+    public double getTemp_max() {
+        return temp_max;
     }
     
     /*
-     * GETTERS KAI SETTERS
+     * GETTERS
      * ΤΕΛΟΣ
     */
+
 }

@@ -48,13 +48,37 @@ public class JsonParser {
         
         return temp; // Επιστροφή δεδομένων στον χρήστη
     }
-   
-    // Εξόρυξη ονόματος πόλης από το JSON string
+    
+    // Εξόρυξη μέγιστης θερμοκρασίας από το JSON string
+    public double get_maxTemp(int ari8mosEggrafis)throws JSONException{
+
+        JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
+        JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
+        JSONObject city=(JSONObject)list.get(ari8mosEggrafis); // Επιλογή πόλης
+        JSONObject main=(JSONObject)city.get("main"); // Επιλογή πυρήνα καιρικών πληροφοριών
+        double temp=main.getDouble("temp_min"); // Ανάγνωση πεδίου θερμοκρασίας επιλεγμένης πόλης
+        
+        return temp; // Επιστροφή δεδομένων στον χρήστη
+    }
+    
+    // Εξόρυξη ελάχιστης θερμοκρασίας από το JSON string
+    public double get_minTemp(int ari8mosEggrafis)throws JSONException{
+
+        JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
+        JSONArray list=(JSONArray)obj.get("list"); // Επιλογή λίστας δεδομένων
+        JSONObject city=(JSONObject)list.get(ari8mosEggrafis); // Επιλογή πόλης
+        JSONObject main=(JSONObject)city.get("main"); // Επιλογή πυρήνα καιρικών πληροφοριών
+        double temp=main.getDouble("temp_min"); // Ανάγνωση πεδίου θερμοκρασίας επιλεγμένης πόλης
+        
+        return temp; // Επιστροφή δεδομένων στον χρήστη
+    }
+    
+    // Εξόρυξη κωδικού πόλης από το JSON string για την οποία γίνεται πενθήμερη πρόβλεψη
     public long get_CityID_5Hmerwn()throws JSONException{
 
         JSONObject obj=new JSONObject(this.json); // Δημιουργία νέου αντικειμένου JSON
-        JSONObject list=(JSONObject)obj.get("city"); // Επιλογή αντικειμένου πόλης
-        long id = list.getLong("id"); // Ανάγνωση πεδίου κωδικού επιλεγμένης πόλης
+        JSONObject city=(JSONObject)obj.get("city"); // Επιλογή αντικειμένου πόλης
+        long id = city.getLong("id"); // Ανάγνωση πεδίου κωδικού επιλεγμένης πόλης
                
         return id; // Επιστροφή δεδομένων στον χρήστη
     }

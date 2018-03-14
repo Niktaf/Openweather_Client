@@ -97,10 +97,10 @@ public class frmMain extends javax.swing.JFrame {
                                 + "temperature DECIMAL(6,3) NOT NULL, "
                                 + "weather_description VARCHAR(255) NOT NULL, "
                                 + "clouds INTEGER NOT NULL, "
-                                + "wind_speed DECIMAL(5,1) NOT NULL, "
+                                + "wind_speed DECIMAL(5,2) NOT NULL, "
                                 + "dt TIMESTAMP NOT NULL, "
-                                + "rain DECIMAL(5,4) NOT NULL, "
-                                + "snow DECIMAL(4,3) NOT NULL, "
+                                + "rain DECIMAL(7,4) NOT NULL, "
+                                + "snow DECIMAL(7,3) NOT NULL, "
                                 + "PRIMARY KEY (id))");
                     }
                 } catch (SQLException ex) {
@@ -123,10 +123,10 @@ public class frmMain extends javax.swing.JFrame {
                                 + "temp_max DECIMAL(6,3) NOT NULL, "
                                 + "weather_description VARCHAR(255) NOT NULL, "
                                 + "clouds INTEGER NOT NULL, "
-                                + "wind_speed DECIMAL(5,1) NOT NULL, "
+                                + "wind_speed DECIMAL(5,2) NOT NULL, "
                                 + "dt TIMESTAMP NOT NULL, "
-                                + "rain DECIMAL(5,4) NOT NULL, "
-                                + "snow DECIMAL(4,3) NOT NULL, "
+                                + "rain DECIMAL(7,4) NOT NULL, "
+                                + "snow DECIMAL(7,3) NOT NULL, "
                                 + "PRIMARY KEY (id))");
                     }
                 } catch (SQLException ex) {
@@ -197,19 +197,24 @@ public class frmMain extends javax.swing.JFrame {
         Sindesi(); // Άνοιγμα σύνδεσης με τη βάση δεδομένων
 
         // Δημιουργία ερωτήματος προς τη βάση δεδομένων για εισαγωγή μετεωρολογικών δεδομένων
-        insertData = conn.prepareStatement("INSERT INTO tbl_provlepseis (city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow) VALUES (?,?,?,?,?,?,?,?)");
+        insertData = conn.prepareStatement("INSERT INTO tbl_provlepseis (city_id, temperature, temp_min, temp_max, weather_description, clouds, wind_speed, dt, rain, snow) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
-        // Προετοιμασία μετεωρολογικών δεδομένων
-        insertData.setLong(1, provlepsi.getCityID());
-        insertData.setDouble(2, provlepsi.getTemp());
-        insertData.setString(3, provlepsi.getDesc());
-        insertData.setInt(4, provlepsi.getClouds());
-        insertData.setDouble(5, provlepsi.getWindSpeed());
-        insertData.setTimestamp(6, provlepsi.getDt());
-        insertData.setDouble(7, provlepsi.getRain());
-        insertData.setDouble(8, provlepsi.getSnow());
+        for (int i = 0; i < provlepsi.arKP_5hmerwn.size(); i++) {
+            // Προετοιμασία μετεωρολογικών δεδομένων
+            insertData.setLong(1, provlepsi.arKP_5hmerwn.get(i).getCityID());
+            insertData.setDouble(2, provlepsi.arKP_5hmerwn.get(i).getTemp());
+            insertData.setDouble(3, provlepsi.arKP_5hmerwn.get(i).getTemp_min());
+            insertData.setDouble(4, provlepsi.arKP_5hmerwn.get(i).getTemp_max());
+            insertData.setString(5, provlepsi.arKP_5hmerwn.get(i).getDesc());
+            insertData.setInt(6, provlepsi.arKP_5hmerwn.get(i).getClouds());
+            insertData.setDouble(7, provlepsi.arKP_5hmerwn.get(i).getWind());
+            insertData.setTimestamp(8, provlepsi.arKP_5hmerwn.get(i).getDt());
+            insertData.setDouble(9, provlepsi.arKP_5hmerwn.get(i).getRain());
+            insertData.setDouble(10, provlepsi.arKP_5hmerwn.get(i).getSnow());
 
-        insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
+            insertData.executeUpdate(); // Εκτέλεση εισαγωγής δεδομένων
+        }
+
         insertData = null; // Άδειασμα του αντικειμένου
 
         Aposindesi(); // Κλείσιμο σύνδεσης με τη βάση δεδομένων
@@ -246,12 +251,29 @@ public class frmMain extends javax.swing.JFrame {
         tableModel.addColumn("Ημερομηνία - Ώρα");
         tableModel.addColumn("Ύψος βροχής");
         tableModel.addColumn("Ύψος χιονιού");
+
         dbCreate(); // Δημιουργία βάσης δεδομένων κατά την έναρξη της εφαρμογής αν αυτή δεν υπάρχει.
+
         EnimerwsiTrexontwsKairou("http://api.openweathermap.org/data/2.5/group?id=264371,734077,8133690,8133786,261743&units=metric&appid=fd798713a90f9501121e8dc78d7d0a47");
         LoadTable("SELECT city_id, temperature, weather_description, clouds, wind_speed, dt, rain, snow FROM TBL_WEATHERDATA ORDER BY DT DESC");
         LoadList("SELECT city FROM TBL_CITIES ORDER BY city");
         LoadComboBox(cbCities_Prognwsi, "SELECT city FROM TBL_CITIES ORDER BY city");
         LoadComboBox(cbCities_Statistika, "SELECT city FROM TBL_CITIES ORDER BY city");
+        
+        // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
+        Sindesi();
+        Statement sta = conn.createStatement();
+        // Συλλογή των κωδικών πόλεων από τη βάση δεδομένων
+        ResultSet rs = sta.executeQuery("SELECT city_ID FROM TBL_CITIES"); 
+        /* Για κάθε κωδικό πόλης που βρέθηκε, ζήτηση και λήψη μετεωρολογικών
+         * δεδομένων για πρόβλεψη καιρού πενθημέρου και στη συνέχεια καταχώρηση
+         * αυτών στη βάση δεδομένων
+        */
+        while(rs.next()) { 
+            ProvlepsiPen8imerou("http://api.openweathermap.org/data/2.5/forecast?id="+rs.getLong(1)+"&appid=fd798713a90f9501121e8dc78d7d0a47");
+        }
+        
+        Aposindesi(); // Αποσύνδεση από τη βάση
     }
 
     /*
@@ -263,9 +285,9 @@ public class frmMain extends javax.swing.JFrame {
             Sindesi(); // Πραγματοποίηση σύνδεσης με τη βάση δεδομένων
             Statement sta = conn.createStatement();
             ResultSet rs = sta.executeQuery(sql);
-            
+
             tableModel.setRowCount(0); // Καθαρισμός του πίνακα jTable1
-            
+
             while (rs.next()) { // Για όσο υπάρχουν εγγραφές μέσα στο ResultSet 
                 tableModel.addRow(new Object[]{rs.getInt(1), rs.getDouble(2), rs.getString(3), rs.getInt(4),
                     rs.getDouble(5), rs.getTimestamp(6), rs.getInt(7), rs.getInt(8)});
@@ -812,7 +834,7 @@ public class frmMain extends javax.swing.JFrame {
         } catch (JSONException ex) {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_btnAnanewsiActionPerformed
 
     private void btnProvlepsi1asImerasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProvlepsi1asImerasActionPerformed
